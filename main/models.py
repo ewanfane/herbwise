@@ -6,3 +6,7 @@ class Item(models.Model):
 class Box(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     value = models.CharField(max_length=1000)
+    
+class Record(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True)
+    data = models.JSONField(default=dict)
