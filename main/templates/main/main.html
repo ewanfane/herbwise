@@ -1,81 +1,26 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+    <link rel="stylesheet" href="{% static 'main/main.css' %}">
     {% csrf_token %}
     <title>HerbWise</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #2c2c2c;
-            color: white;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .item-box {
-            background-color: #444;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-        .box-list {
-            list-style-type: none;
-            padding: 0;
-        }
-        .box-item {
-            background-color: #555;
-            padding: 8px;
-            margin: 5px 0;
-            border-radius: 5px;
-        }
-        .box-item input {
-            padding: 5px;
-            margin-right: 10px;
-        }
-        .box-item button {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 3px;
-        }
-        .box-item button:hover {
-            background-color: #c0392b;
-        }
-        .add-box {
-            background-color: #2ecc71;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .add-box:hover {
-            background-color: #27ae60;
-        }
-        .add-item {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        .add-item:hover {
-            background-color: #2980b9;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
         <h1>HerbWise</h1>
+
+        <div class="chart-container">
+        
+        <select id="dataSelect"></select>
+     
+        <canvas id="myChart"></canvas>
+        </div>
 
         {% for record in records %}
             <div class="item-box">
@@ -113,5 +58,77 @@
         }
         
     </script>
+
+    <script>
+        
+        const data = {{ items|safe }};  // Fetch data from Django
+        const chartCanvas = document.getElementById('myChart');
+        const dataSelect = document.getElementById('dataSelect');
+    
+        // Extract unique keys and exclude 'timestamp'
+        const uniqueKeys = [...new Set(data.flatMap(Object.keys))].filter(key => key !== 'timestamp');
+    
+        // Populate the dropdown
+        uniqueKeys.forEach(key => {
+            const option = document.createElement('option');
+            option.value = key;
+            option.text = key;
+            dataSelect.appendChild(option);
+        });
+    
+        let myChart; // Declare chart variable globally
+    
+        function createChart(selectedKey) {
+            const chartData = data.map(item => ({
+                x: new Date(item.timestamp), // Convert timestamp properly
+                y: item[selectedKey] // Get the selected metric
+            }));
+    
+            const chartConfig = {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: selectedKey,
+                        data: chartData,
+                        borderColor: 'blue',
+                        borderWidth: 1,
+                        fill: false,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            type: 'time', // Time-based x-axis
+                            time: {
+                                unit: 'second' // Adjust based on your data frequency
+                            },
+                            title: { display: true, text: 'Timestamp' }
+                        },
+                        y: {
+                            title: { display: true, text: selectedKey }
+                        }
+                    }
+                }
+            };
+    
+            if (myChart) {
+                myChart.destroy(); // Destroy old chart before creating a new one
+            }
+            myChart = new Chart(chartCanvas, chartConfig);
+        }
+    
+        // Initial chart creation (default to first metric)
+        createChart(uniqueKeys[0]);
+    
+        // Update chart instantly when dropdown changes
+        dataSelect.addEventListener('change', () => {
+            createChart(dataSelect.value);
+        });
+    </script>
+    
+    
 </body>
 </html>
