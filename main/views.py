@@ -1,3 +1,4 @@
+from django.forms import model_to_dict
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
@@ -7,9 +8,15 @@ import json
 
 
 def main_view(request):
-    items = Item.objects.all()
     records = Record.objects.all()
+    items = []
+    for record in records:
+        timestamp = record.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+        record_data = record.data  # Ensure we're modifying a copy of the data, not the original
+        record_data['timestamp'] = timestamp  # Ensure timestamp is always present
+        items.append(record_data)
     return render(request, 'main/main.html', {'items': items, 'records': records})
+
 
 
 
