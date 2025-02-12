@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-^q2!#ls&gd#!)w6-_rqe%h))pg^08aqzaoo&jg+=+f(kmp(dzb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['213.219.37.35', '127.0.0.1']
+ALLOWED_HOSTS = ['213.219.37.35', '127.0.0.1', 'herbwise.site']
 
 
 # Application definition
