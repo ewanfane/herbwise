@@ -6,4 +6,5 @@ urlpatterns = [
     path('delete_record/<int:record_id>/', views.delete_record, name='delete_record'),
     path('api/receive/', views.receive_data, name='receive_data'),
     path('poker/', views.roulette_view, name='poker'),
+    path('poker2/', views.roulette_view2, name='poker2'),
 ]
