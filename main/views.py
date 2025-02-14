@@ -19,6 +19,11 @@ def main_view(request):
 
 
 
+def roulette_view(request):
+    
+    return render(request, 'main/poker.html')
+
+
 
 
 def delete_record(request, record_id):
