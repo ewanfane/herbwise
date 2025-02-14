@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Roulette Odds Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --red: #c62828;
+            --black: #212121;
+            --green: #2e7d32;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        .input-section {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        input[type="number"] {
+            padding: 8px;
+            width: 120px;
+            flex: 1;
+        }
+
+        button {
+            padding: 8px 12px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            flex: 1;
+        }
+
+        .history {
+            margin-top: 15px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 3px;
+            margin-top: 10px;
+        }
+
+        .number-item {
+            padding: 8px;
+            text-align: center;
+            border-radius: 4px;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1;
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        th, td {
+            padding: 6px;
+            text-align: left;
+        }
+
+        .highlight {
+            background-color: #e8f5e9;
+        }
+
+        .scrollable {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        @media (min-width: 600px) {
+            .grid {
+                grid-template-columns: repeat(19, 1fr);
+            }
+            
+            .number-item {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Roulette Analyzer</h1>
+        <div class="input-section">
+            <input type="number" id="numberInput" min="0" max="36" placeholder="Number (0-36)">
+            <button id="addButton">Add</button>
+            <button id="clearButton">Clear</button>
+        </div>
+
+        <div class="history">
+            <h3>Recent Numbers</h3>
+            <div class="grid" id="historyGrid"></div>
+        </div>
+
+        <div class="stats-section">
+            <div class="stat-card">
+                <h3>Numbers</h3>
+                <div class="grid" id="numberGrid"></div>
+            </div>
+
+            <div class="stat-card scrollable">
+                <h3>Rows/Columns</h3>
+                <table>
+                    <tr><th>Type</th><th>Count</th><th>%</th></tr>
+                    <tbody id="rowColStats"></tbody>
+                </table>
+            </div>
+
+            <div class="stat-card">
+                <h3>Even/Odd</h3>
+                <table>
+                    <tr><th>Type</th><th>Count</th><th>%</th></tr>
+                    <tbody id="parityStats"></tbody>
+                </table>
+            </div>
+
+            <div class="stat-card">
+                <h3>Red/Black</h3>
+                <table>
+                    <tr><th>Color</th><th>Count</th><th>%</th></tr>
+                    <tbody id="colorStats"></tbody>
+                </table>
+            </div>
+
+            <div class="stat-card scrollable">
+                <h3>Pairs/Quads</h3>
+                <table>
+                    <tr><th>Type</th><th>Count</th><th>%</th></tr>
+                    <tbody id="pairStats"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const redNumbers = new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
+        let stats = {
+            numbers: {},
+            red: 0,
+            black: 0,
+            odd: 0,
+            even: 0,
+            rows: Array(12).fill(0),  // 12 rows of 3 numbers each (1-3, 4-6,...34-36)
+            columns: Array(3).fill(0), // 3 vertical columns
+            pairs: {},
+            quads: {},
+            streets: {},
+            history: []
+        };
+
+        function getNumberColor(num) {
+            num = parseInt(num);
+            if (num === 0) return 'var(--green)';
+            return redNumbers.has(num) ? 'var(--red)' : 'var(--black)';
+        }
+
+        function getRow(num) {
+            return num === 0 ? -1 : Math.floor((num - 1) / 3);
+        }
+
+        function getColumn(num) {
+            return num === 0 ? -1 : (num - 1) % 3;
+        }
+
+        function getStreet(num) {
+            return num === 0 ? -1 : Math.floor((num - 1) / 3);
+        }
+
+        function updateStats(num) {
+            stats.numbers[num] = (stats.numbers[num] || 0) + 1;
+            
+            if (num !== 0) {
+                // Update parity
+                num % 2 === 0 ? stats.even++ : stats.odd++;
+                
+                // Update color
+                redNumbers.has(num) ? stats.red++ : stats.black++;
+                
+                // Update rows and columns
+                const row = getRow(num);
+                if (row >= 0) stats.rows[row]++;
+                
+                const col = getColumn(num);
+                if (col >= 0) stats.columns[col]++;
+            }
+
+            // Update pairs and streets
+            if (stats.history.length > 0) {
+                // Track adjacent pairs
+                const lastNum = stats.history[stats.history.length - 1];
+                const pairKey = [lastNum, num].sort().join('-');
+                stats.pairs[pairKey] = (stats.pairs[pairKey] || 0) + 1;
+
+                // Track street triples
+                if (stats.history.length >= 2) {
+                    const street = [stats.history[stats.history.length - 2], lastNum, num].sort().join('-');
+                    stats.streets[street] = (stats.streets[street] || 0) + 1;
+                }
+            }
+
+            stats.history.push(num);
+        }
+
+        function renderRowStats() {
+            const total = stats.history.length - (stats.numbers[0] || 0);
+            return stats.rows.map((count, i) => {
+                const start = i * 3 + 1;
+                const percentage = total > 0 ? (count / total * 100).toFixed(1) : '0.0';
+                return `
+                    <tr ${count < total/12 ? 'class="highlight"' : ''}>
+                        <td>Row ${start}-${start+2}</td>
+                        <td>${count}</td>
+                        <td>${percentage}%</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateDisplay() {
+            // History grid
+            document.getElementById('historyGrid').innerHTML = 
+                stats.history.slice(-25).reverse().map(num => `
+                    <div class="number-item" style="background:${getNumberColor(num)}">
+                        ${num}
+                    </div>
+                `).join('');
+
+            // Number grid
+            document.getElementById('numberGrid').innerHTML = 
+                Array.from({length: 37}, (_, i) => i).map(num => `
+                    <div class="number-item" 
+                         style="background:${getNumberColor(num)};${stats.numbers[num] ? 'font-weight:bold' : ''}">
+                        ${num}<br>
+                        <small>${stats.numbers[num] || ''}</small>
+                    </div>
+                `).join('');
+
+            // Stats tables
+            const total = stats.history.length;
+            const spinsWithoutZero = total - (stats.numbers[0] || 0);
+
+            // Row/Column Stats
+            document.getElementById('rowColStats').innerHTML = `
+                ${renderRowStats()}
+                ${stats.columns.map((count, i) => {
+                    const percentage = spinsWithoutZero > 0 ? (count / spinsWithoutZero * 100).toFixed(1) : '0.0';
+                    return `
+                        <tr ${count < spinsWithoutZero/3 ? 'class="highlight"' : ''}>
+                            <td>Column ${i+1}</td>
+                            <td>${count}</td>
+                            <td>${percentage}%</td>
+                        </tr>
+                    `;
+                }).join('')}
+            `;
+
+            // Parity Stats
+            document.getElementById('parityStats').innerHTML = `
+                <tr ${stats.even < stats.odd ? 'class="highlight"' : ''}>
+                    <td>Even</td>
+                    <td>${stats.even}</td>
+                    <td>${((stats.even / (stats.even + stats.odd)) * 100 || 0).toFixed(1)}%</td>
+                </tr>
+                <tr ${stats.odd < stats.even ? 'class="highlight"' : ''}>
+                    <td>Odd</td>
+                    <td>${stats.odd}</td>
+                    <td>${((stats.odd / (stats.even + stats.odd)) * 100 || 0).toFixed(1)}%</td>
+                </tr>
+            `;
+
+            // Color Stats
+            document.getElementById('colorStats').innerHTML = `
+                <tr ${stats.red < stats.black ? 'class="highlight"' : ''}>
+                    <td>Red</td>
+                    <td>${stats.red}</td>
+                    <td>${((stats.red / spinsWithoutZero) * 100 || 0).toFixed(1)}%</td>
+                </tr>
+                <tr ${stats.black < stats.red ? 'class="highlight"' : ''}>
+                    <td>Black</td>
+                    <td>${stats.black}</td>
+                    <td>${((stats.black / spinsWithoutZero) * 100 || 0).toFixed(1)}%</td>
+                </tr>
+                <tr>
+                    <td>Green</td>
+                    <td>${stats.numbers[0] || 0}</td>
+                    <td>${((stats.numbers[0] / total) * 100 || 0).toFixed(1)}%</td>
+                </tr>
+            `;
+
+            // Pair/Street Stats
+            document.getElementById('pairStats').innerHTML = 
+                Object.entries(stats.pairs)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 5)
+                    .map(([pair, count]) => `
+                        <tr>
+                            <td>Pair ${pair}</td>
+                            <td>${count}</td>
+                            <td>${((count / total) * 100 || 0).toFixed(1)}%</td>
+                        </tr>
+                    `).join('') ||
+                '<tr><td colspan="3">No pairs yet</td></tr>';
+        }
+
+        document.getElementById('addButton').addEventListener('click', () => {
+            const input = document.getElementById('numberInput');
+            const num = parseInt(input.value);
+            
+            if (num >= 0 && num <= 36) {
+                updateStats(num);
+                updateDisplay();
+                input.value = '';
+            }
+        });
+
+        document.getElementById('clearButton').addEventListener('click', () => {
+            stats = {
+                numbers: {},
+                red: 0,
+                black: 0,
+                odd: 0,
+                even: 0,
+                rows: Array(12).fill(0),
+                columns: Array(3).fill(0),
+                pairs: {},
+                quads: {},
+                streets: {},
+                history: []
+            };
+            updateDisplay();
+        });
+
+        updateDisplay();
+    </script>
+</body>
+</html>
