@@ -1,99 +1,164 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Roulette Odds Calculator</title>
+    <title>Advanced Roulette Analyzer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* Previous styles remain */
-        .category-section {
-            margin-top: 30px;
+        :root {
+            --red: #c62828;
+            --black: #212121;
+            --green: #2e7d32;
+        }
+
+        body {
+            margin: 0;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        .input-section {
             display: flex;
-            gap: 20px;
+            gap: 8px;
+            margin-bottom: 15px;
             flex-wrap: wrap;
         }
 
-        .category-card {
-            background: #fff;
+        input[type="number"] {
+            padding: 8px;
+            width: 120px;
+            flex: 1;
+        }
+
+        button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .roulette-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            margin: 15px 0;
+            max-width: 400px;
+        }
+
+        .number-cell {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+            position: relative;
+        }
+
+        .number-cell span {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .number-cell small {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .stat-card {
+            background: white;
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            flex: 1 1 300px;
+            margin-bottom: 10px;
         }
 
-        .frequency-table {
+        table {
             width: 100%;
-            margin-top: 20px;
-        }
-
-        .highlight {
-            background-color: #e8f5e9 !important;
-        }
-
-        .number-grid {
-            display: grid;
-            grid-template-columns: repeat(19, 1fr);
-            gap: 2px;
             margin-top: 10px;
         }
 
-        .number-item {
-            padding: 5px;
-            text-align: center;
+        th, td {
+            padding: 6px;
+            text-align: left;
+        }
+
+        .highlight {
+            background-color: #e8f5e9;
+        }
+
+        #predictions {
+            margin-top: 20px;
+            padding: 15px;
             background: #f5f5f5;
-            border-radius: 4px;
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Roulette Odds Calculator</h1>
-        <div class="input-section">
-            <input type="number" id="numberInput" min="0" max="36" placeholder="Enter a number (0-36)">
-            <button id="addButton">Add Number</button>
-            <button id="clearButton">Clear History</button>
-        </div>
+        <h1>Roulette Analyzer</h1>
         
-        <div class="history">
-            <h2>Spin History</h2>
-            <div class="number-grid" id="historyGrid"></div>
+        <div class="input-section">
+            <input type="number" id="numberInput" min="0" max="36" placeholder="Enter number (0-36)">
+            <button id="addButton">Add</button>
+            <button id="clearButton">Clear</button>
         </div>
 
-        <div class="predictions">
-            <h2>Predictions & Statistics</h2>
-            <div class="category-section">
-                <div class="category-card">
-                    <h3>Numbers (0-36)</h3>
-                    <div class="number-grid" id="numberGrid"></div>
-                </div>
-                
-                <div class="category-card">
-                    <h3>Red/Black</h3>
-                    <table>
-                        <tr><th>Color</th><th>Count</th><th>%</th></tr>
-                        <tbody id="colorStats"></tbody>
-                    </table>
-                </div>
+        <div class="roulette-grid" id="numberGrid"></div>
 
-                <div class="category-card">
-                    <h3>Odd/Even</h3>
-                    <table>
-                        <tr><th>Type</th><th>Count</th><th>%</th></tr>
-                        <tbody id="parityStats"></tbody>
-                    </table>
-                </div>
-
-                <div class="category-card">
-                    <h3>High/Low</h3>
-                    <table>
-                        <tr><th>Range</th><th>Count</th><th>%</th></tr>
-                        <tbody id="rangeStats"></tbody>
-                    </table>
-                </div>
+        <div class="stats-section">
+            <div class="stat-card">
+                <h3>Color Stats</h3>
+                <table>
+                    <tr><th>Color</th><th>Count</th><th>%</th></tr>
+                    <tbody id="colorStats"></tbody>
+                </table>
             </div>
+
+            <div class="stat-card">
+                <h3>Odd/Even & High/Low</h3>
+                <table>
+                    <tr><th>Type</th><th>Count</th><th>%</th></tr>
+                    <tbody id="parityStats"></tbody>
+                    <tbody id="highLowStats"></tbody>
+                </table>
+            </div>
+
+            <div class="stat-card">
+                <h3>Rows (1-3, 4-6...)</h3>
+                <table>
+                    <tr><th>Row</th><th>Count</th><th>%</th></tr>
+                    <tbody id="rowStats"></tbody>
+                </table>
+            </div>
+
+            <div class="stat-card">
+                <h3>Columns</h3>
+                <table>
+                    <tr><th>Column</th><th>Count</th><th>%</th></tr>
+                    <tbody id="columnStats"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="predictions">
+            <h3>Most Likely Numbers</h3>
+            <div id="predictionList"></div>
         </div>
     </div>
 
     <script>
-        let spinHistory = [];
+        const redNumbers = new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
+        const columnRanges = ['1-34', '2-35', '3-36'];
         let stats = {
             numbers: {},
             red: 0,
@@ -102,99 +167,180 @@
             even: 0,
             high: 0,
             low: 0,
-            green: 0
+            rows: Array(12).fill(0),
+            columns: Array(3).fill(0),
+            history: []
         };
-
-        const redNumbers = new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
-
-        function updateDisplay() {
-            // Update history grid
-            const historyGrid = document.getElementById('historyGrid');
-            historyGrid.innerHTML = spinHistory.reverse().map(num => 
-                `<div class="number-item" style="background:${getNumberColor(num)}">${num}</div>`
-            ).join('');
-
-            // Update number grid
-            const numberGrid = document.getElementById('numberGrid');
-            numberGrid.innerHTML = Array.from({length: 37}, (_, i) => {
-                const num = i.toString();
-                const count = stats.numbers[num] || 0;
-                return `<div class="number-item" style="background:${getNumberColor(num)}">
-                    ${num}<br><small>${count}</small>
-                </div>`;
-            }).join('');
-
-            // Update color stats
-            const colorTotal = stats.red + stats.black;
-            document.getElementById('colorStats').innerHTML = `
-                ${makeRow('Red', stats.red, colorTotal, stats.red < stats.black)}
-                ${makeRow('Black', stats.black, colorTotal, stats.black < stats.red)}
-                ${makeRow('Green', stats.green, spinHistory.length)}
-            `;
-
-            // Update parity stats
-            const parityTotal = stats.odd + stats.even;
-            document.getElementById('parityStats').innerHTML = `
-                ${makeRow('Odd', stats.odd, parityTotal, stats.odd < stats.even)}
-                ${makeRow('Even', stats.even, parityTotal, stats.even < stats.odd)}
-            `;
-
-            // Update range stats
-            const rangeTotal = stats.high + stats.low;
-            document.getElementById('rangeStats').innerHTML = `
-                ${makeRow('High (19-36)', stats.high, rangeTotal, stats.high < stats.low)}
-                ${makeRow('Low (1-18)', stats.low, rangeTotal, stats.low < stats.high)}
-            `;
-        }
-
-        function makeRow(label, count, total, highlight = false) {
-            const percentage = total > 0 ? (count / total * 100).toFixed(1) : '0.0';
-            return `<tr ${highlight ? 'class="highlight"' : ''}>
-                <td>${label}</td>
-                <td>${count}</td>
-                <td>${percentage}%</td>
-            </tr>`;
-        }
 
         function getNumberColor(num) {
             num = parseInt(num);
-            if (num === 0) return '#2e7d32';
-            return redNumbers.has(num) ? '#c62828' : '#212121';
+            if (num === 0) return 'var(--green)';
+            return redNumbers.has(num) ? 'var(--red)' : 'var(--black)';
         }
 
-        document.getElementById('addButton').addEventListener('click', function() {
-            const input = document.getElementById('numberInput');
-            const num = parseInt(input.value);
+        function updateStats(num) {
+            stats.numbers[num] = (stats.numbers[num] || 0) + 1;
             
-            if (isNaN(num) || num < 0 || num > 36) {
-                alert('Please enter a number between 0-36');
-                return;
-            }
-
-            // Update stats
-            const numStr = num.toString();
-            stats.numbers[numStr] = (stats.numbers[numStr] || 0) + 1;
-            
-            if (num === 0) {
-                stats.green++;
-            } else {
-                // Update color stats
+            if (num !== 0) {
+                // Update basic stats
+                num % 2 === 0 ? stats.even++ : stats.odd++;
+                num > 18 ? stats.high++ : stats.low++;
                 redNumbers.has(num) ? stats.red++ : stats.black++;
                 
-                // Update parity stats
-                num % 2 === 0 ? stats.even++ : stats.odd++;
-                
-                // Update range stats
-                num > 18 ? stats.high++ : stats.low++;
+                // Update rows and columns
+                const row = Math.floor((num - 1) / 3);
+                const col = (num - 1) % 3;
+                stats.rows[row]++;
+                stats.columns[col]++;
             }
 
-            spinHistory.push(numStr);
-            updateDisplay();
-            input.value = '';
+            stats.history.push(num);
+        }
+
+        function updateDisplay() {
+            // Update roulette grid
+            const gridContainer = document.getElementById('numberGrid');
+            gridContainer.innerHTML = `
+                <div class="number-cell" style="background:var(--green)">
+                    <span>0</span>
+                    <small>${stats.numbers[0] || 0}</small>
+                </div>
+                ${Array.from({length: 36}, (_, i) => {
+                    const num = i + 1;
+                    return `
+                        <div class="number-cell" style="background:${getNumberColor(num)}">
+                            <span>${num}</span>
+                            <small>${stats.numbers[num] || 0}</small>
+                        </div>
+                    `;
+                }).join('')}
+            `;
+
+            // Update stats tables
+            const total = stats.history.length;
+            const spinsWithoutZero = total - (stats.numbers[0] || 0);
+
+            // Color stats
+            document.getElementById('colorStats').innerHTML = `
+                <tr ${stats.red < stats.black ? 'class="highlight"' : ''}>
+                    <td>Red</td>
+                    <td>${stats.red}</td>
+                    <td>${((stats.red / spinsWithoutZero) * 100 || 0).toFixed(1)}%</td>
+                </tr>
+                <tr ${stats.black < stats.red ? 'class="highlight"' : ''}>
+                    <td>Black</td>
+                    <td>${stats.black}</td>
+                    <td>${((stats.black / spinsWithoutZero) * 100 || 0).toFixed(1)}%</td>
+                </tr>
+                <tr>
+                    <td>Green</td>
+                    <td>${stats.numbers[0] || 0}</td>
+                    <td>${((stats.numbers[0] / total) * 100 || 0).toFixed(1)}%</td>
+                </tr>
+            `;
+
+            // Parity and High/Low stats
+            document.getElementById('parityStats').innerHTML = `
+                <tr ${stats.even < stats.odd ? 'class="highlight"' : ''}>
+                    <td>Even</td>
+                    <td>${stats.even}</td>
+                    <td>${((stats.even / spinsWithoutZero) * 100 || 0).toFixed(1)}%</td>
+                </tr>
+                <tr ${stats.odd < stats.even ? 'class="highlight"' : ''}>
+                    <td>Odd</td>
+                    <td>${stats.odd}</td>
+                    <td>${((stats.odd / spinsWithoutZero) * 100 || 0).toFixed(1)}%</td>
+                </tr>
+            `;
+
+            document.getElementById('highLowStats').innerHTML = `
+                <tr ${stats.high < stats.low ? 'class="highlight"' : ''}>
+                    <td>High (19-36)</td>
+                    <td>${stats.high}</td>
+                    <td>${((stats.high / spinsWithoutZero) * 100 || 0).toFixed(1)}%</td>
+                </tr>
+                <tr ${stats.low < stats.high ? 'class="highlight"' : ''}>
+                    <td>Low (1-18)</td>
+                    <td>${stats.low}</td>
+                    <td>${((stats.low / spinsWithoutZero) * 100 || 0).toFixed(1)}%</td>
+                </tr>
+            `;
+
+            // Row and Column stats
+            document.getElementById('rowStats').innerHTML = stats.rows
+                .map((count, i) => {
+                    const start = i * 3 + 1;
+                    const percentage = (count / spinsWithoutZero * 100 || 0).toFixed(1);
+                    return `
+                        <tr ${count < Math.max(...stats.rows) ? 'class="highlight"' : ''}>
+                            <td>${start}-${start+2}</td>
+                            <td>${count}</td>
+                            <td>${percentage}%</td>
+                        </tr>
+                    `;
+                }).join('');
+
+            document.getElementById('columnStats').innerHTML = stats.columns
+                .map((count, i) => {
+                    const percentage = (count / spinsWithoutZero * 100 || 0).toFixed(1);
+                    return `
+                        <tr ${count < Math.max(...stats.columns) ? 'class="highlight"' : ''}>
+                            <td>Column ${columnRanges[i]}</td>
+                            <td>${count}</td>
+                            <td>${percentage}%</td>
+                        </tr>
+                    `;
+                }).join('');
+
+            // Update predictions
+            updatePredictions();
+        }
+
+        function updatePredictions() {
+            const predictedColor = stats.red > stats.black ? 'red' : 'black';
+            const predictedParity = stats.even > stats.odd ? 'even' : 'odd';
+            const predictedRange = stats.high > stats.low ? 'high' : 'low';
+
+            const candidates = Array.from({length: 36}, (_, i) => i + 1)
+                .filter(num => {
+                    const color = redNumbers.has(num) ? 'red' : 'black';
+                    const parity = num % 2 === 0 ? 'even' : 'odd';
+                    const range = num > 18 ? 'high' : 'low';
+                    return color === predictedColor && 
+                           parity === predictedParity && 
+                           range === predictedRange;
+                });
+
+            const sorted = candidates.sort((a, b) => {
+                const countDiff = (stats.numbers[b] || 0) - (stats.numbers[a] || 0);
+                return countDiff !== 0 ? countDiff : a - b;
+            });
+
+            document.getElementById('predictionList').innerHTML = `
+                <p>Based on current trends (${predictedColor}, ${predictedParity}, ${predictedRange}):</p>
+                <div class="number-grid">
+                    ${sorted.map(num => `
+                        <div class="number-item" style="background:${getNumberColor(num)}">
+                            ${num}<br>
+                            <small>${stats.numbers[num] || 0}</small>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Event listeners
+        document.getElementById('addButton').addEventListener('click', () => {
+            const input = document.getElementById('numberInput');
+            const num = parseInt(input.value);
+            if (num >= 0 && num <= 36) {
+                updateStats(num);
+                updateDisplay();
+                input.value = '';
+            }
         });
 
-        document.getElementById('clearButton').addEventListener('click', function() {
-            spinHistory = [];
+        document.getElementById('clearButton').addEventListener('click', () => {
             stats = {
                 numbers: {},
                 red: 0,
@@ -203,12 +349,14 @@
                 even: 0,
                 high: 0,
                 low: 0,
-                green: 0
+                rows: Array(12).fill(0),
+                columns: Array(3).fill(0),
+                history: []
             };
             updateDisplay();
         });
 
-        // Initial display
+        // Initial setup
         updateDisplay();
     </script>
 </body>
