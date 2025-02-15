@@ -24,15 +24,6 @@ def roulette_view(request):
     return render(request, 'main/poker.html')
 
 
-def roulette_view2(request):
-    
-    return render(request, 'main/poker2.html')
-
-def roulette_view3(request):
-    
-    return render(request, 'main/poker3.html')
-
-
 
 def delete_record(request, record_id):
     record = Record.objects.get(id=record_id)
