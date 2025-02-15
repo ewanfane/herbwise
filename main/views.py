@@ -21,7 +21,7 @@ def main_view(request):
 
 def roulette_view(request):
     
-    return render(request, 'main/poker.html')
+    return render(request, 'main/roulette.html')
 
 
 

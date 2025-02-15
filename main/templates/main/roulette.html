@@ -8,28 +8,87 @@
             --red: #c62828;
             --black: #212121;
             --green: #2e7d32;
+            --table-felt: #00573d;
+            --highlight: #e8f5e9;
         }
-
+        
+        /* Base Styles */
         .container {
-            max-width: 100%;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 10px;
+            padding: 20px;
             font-family: Arial, sans-serif;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
         }
-
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+        
+        /* Number Grid Layout */
+        .number-grid-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .roulette-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            background: var(--table-felt);
+            padding: 5px;
+            border-radius: 8px;
+        }
+        
+        .zero-cell {
+            max-height: 100px;
+            width: 97.5%;
+            grid-column: 1 / -1;
+            background: var(--green);
+            font-size: 1.2em;
+        }
+        
+        .number-cell {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            padding: 3px;
+            min-width: 50px;
+        }
+        
+        .count {
+            font-size: 0.7em;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+        
+        /* Input Section */
         .input-section {
-            margin-bottom: 15px;
+            max-width: 600px;
+            margin: 0 auto 20px;
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
         }
-
+        
         input[type="number"] {
             padding: 8px;
             width: 120px;
             flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
-
+        
         button {
             padding: 8px 12px;
             cursor: pointer;
@@ -38,19 +97,25 @@
             border: none;
             border-radius: 4px;
             flex: 1;
+            transition: opacity 0.2s;
         }
-
+        
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        /* History Grid */
         .history {
             margin-top: 15px;
         }
-
+        
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
             gap: 3px;
             margin-top: 10px;
         }
-
+        
         .number-item {
             padding: 8px;
             text-align: center;
@@ -61,54 +126,111 @@
             justify-content: center;
             aspect-ratio: 1;
         }
-
+        
+        /* Stats Section */
         .stats-section {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
         }
-
+        
         .stat-card {
             background: white;
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        table {
-            width: 100%;
-            margin-top: 10px;
-            font-size: 0.9em;
-        }
-
-        th, td {
-            padding: 6px;
-            text-align: left;
-        }
-
-        .highlight {
-            background-color: #e8f5e9;
-        }
-
+        
         .scrollable {
             max-height: 300px;
             overflow-y: auto;
         }
-
-        @media (min-width: 600px) {
-            .grid {
-                grid-template-columns: repeat(19, 1fr);
-            }
-            
-            .number-item {
-                font-size: 1em;
-            }
-        }
+        
         .separated-section {
             margin-bottom: 20px;
         }
-    </style>
+        
+        /* Tables */
+        table {
+            width: 100%;
+            margin-top: 10px;
+            font-size: 0.9em;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .highlight {
+            background-color: var(--highlight);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 767px) {
+            .number-cell {
+                font-size: 0.9em;
+            }
+            
+            .count {
+                font-size: 0.6em;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .number-cell {
+                font-size: 1.1em;
+                padding: 8px;
+                min-width: 70px;
+            }
+            
+            .count {
+                font-size: 0.8em;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 600px 1fr; /* Reduced from 800px */
+            }
+            
+            .number-grid-container {
+                grid-column: 1;
+                margin: 0;
+            }
+            
+            .stats-section {
+                grid-column: 2;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                position: sticky;
+                top: 20px;
+                height: min-content;
+            }
+            
+            .roulette-grid {
+                gap: 3px;
+                padding: 10px;
+            }
+            
+            .number-cell {
+                min-width: 60px; /* Reduced from 80px */
+                padding: 6px; /* Reduced from 10px */
+                font-size: 1.1em; /* Reduced from 1.2em */
+            }
+            
+            .count {
+                font-size: 0.9em;
+            }
+            
+            .stat-card {
+                padding: 20px;
+            }
+        }
+        </style>
 </head>
 <body>
     <div class="container">
@@ -116,6 +238,7 @@
         <div class="input-section">
             <input type="number" id="numberInput" min="0" max="36" placeholder="Number (0-36)">
             <button id="addButton">Add</button>
+            <button id="undoButton">Undo</button>
             <button id="clearButton">Clear</button>
         </div>
 
@@ -124,52 +247,58 @@
             <div class="grid" id="historyGrid"></div>
         </div>
 
-        <div class="stats-section">
-            <div class="stat-card">
-                <h3>Numbers</h3>
-                <div class="grid" id="numberGrid"></div>
+        <div class="main-grid">
+            <div class="number-grid-container">
+                <div class="stat-card">
+                    <h3>Numbers</h3>
+                    <div class="roulette-grid" id="numberGrid"></div>
+                </div>
+                <!-- Add history grid here if needed -->
             </div>
 
-            <!-- Add High/Low section -->
-            <div class="stat-card">
-                <h3>High/Low</h3>
-                <table>
-                    <tr><th>Range</th><th>Count</th><th>%</th></tr>
-                    <tbody id="highLowStats"></tbody>
-                </table>
-            </div>
+            <div class="stats-section">
 
-            <div class="stat-card">
-                <h3>Even/Odd</h3>
-                <table>
-                    <tr><th>Type</th><th>Count</th><th>%</th></tr>
-                    <tbody id="parityStats"></tbody>
-                </table>
-            </div>
+                <!-- Add High/Low section -->
+                <div class="stat-card">
+                    <h3>High/Low</h3>
+                    <table>
+                        <tr><th>Range</th><th>Count</th><th>%</th></tr>
+                        <tbody id="highLowStats"></tbody>
+                    </table>
+                </div>
 
-            <div class="stat-card">
-                <h3>Red/Black</h3>
-                <table>
-                    <tr><th>Color</th><th>Count</th><th>%</th></tr>
-                    <tbody id="colorStats"></tbody>
-                </table>
-            </div>
+                <div class="stat-card">
+                    <h3>Even/Odd</h3>
+                    <table>
+                        <tr><th>Type</th><th>Count</th><th>%</th></tr>
+                        <tbody id="parityStats"></tbody>
+                    </table>
+                </div>
 
-            <!-- Split rows and columns into separate sections -->
-            <div class="stat-card scrollable separated-section">
-                <h3>Rows</h3>
-                <table>
-                    <tr><th>Row</th><th>Count</th><th>%</th></tr>
-                    <tbody id="rowStats"></tbody>
-                </table>
-            </div>
+                <div class="stat-card">
+                    <h3>Red/Black</h3>
+                    <table>
+                        <tr><th>Color</th><th>Count</th><th>%</th></tr>
+                        <tbody id="colorStats"></tbody>
+                    </table>
+                </div>
 
-            <div class="stat-card scrollable">
-                <h3>Columns</h3>
-                <table>
-                    <tr><th>Column</th><th>Count</th><th>%</th></tr>
-                    <tbody id="columnStats"></tbody>
-                </table>
+                <!-- Split rows and columns into separate sections -->
+                <div class="stat-card scrollable separated-section">
+                    <h3>Rows</h3>
+                    <table>
+                        <tr><th>Row</th><th>Count</th><th>%</th></tr>
+                        <tbody id="rowStats"></tbody>
+                    </table>
+                </div>
+
+                <div class="stat-card scrollable">
+                    <h3>Columns</h3>
+                    <table>
+                        <tr><th>Column</th><th>Count</th><th>%</th></tr>
+                        <tbody id="columnStats"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -253,14 +382,30 @@
                 `).join('');
 
             // Number grid
-            document.getElementById('numberGrid').innerHTML = 
-                Array.from({length: 37}, (_, i) => i).map(num => `
-                    <div class="number-item" 
-                         style="background:${getNumberColor(num)};${stats.numbers[num] ? 'font-weight:bold' : ''}">
-                        ${num}<br>
-                        <small>${stats.numbers[num] || ''}</small>
+           
+                const numberGrid = document.getElementById('numberGrid');
+                const numbers = [];
+                
+                // Add zero first
+                numbers.push(`
+                    <div class="number-cell zero-cell">
+                        <div>0</div>
+                        <div class="count">${stats.numbers[0] || ''}</div>
                     </div>
-                `).join('');
+                `);
+    
+                // Add numbers 1-36 in rows of 3
+                for(let i = 1; i <= 36; i++) {
+                    numbers.push(`
+                        <div class="number-cell" 
+                             style="background:${getNumberColor(i)}">
+                            <div>${i}</div>
+                            <div class="count">${stats.numbers[i] || ''}</div>
+                        </div>
+                    `);
+                }
+    
+                numberGrid.innerHTML = numbers.join('');
 
             // Stats tables
             const total = stats.history.length;
@@ -372,15 +517,50 @@
                 black: 0,
                 odd: 0,
                 even: 0,
+                high: 0,
+                low: 0,
                 rows: Array(12).fill(0),
                 columns: Array(3).fill(0),
-                pairs: {},
-                quads: {},
-                streets: {},
                 history: []
             };
             updateDisplay();
         });
+
+        function undoLast() {
+            if (stats.history.length === 0) return;
+            
+            const lastNumber = stats.history.pop();
+            
+            // Decrement counts
+            if (lastNumber === 0) {
+                stats.numbers[0]--;
+                if (stats.numbers[0] === 0) delete stats.numbers[0];
+            } else {
+                stats.numbers[lastNumber]--;
+                if (stats.numbers[lastNumber] === 0) delete stats.numbers[lastNumber];
+                
+                // Update other stats
+                if (lastNumber % 2 === 0) stats.even--;
+                else stats.odd--;
+                
+                if (redNumbers.has(lastNumber)) stats.red--;
+                else stats.black--;
+                
+                if (lastNumber <= 18) stats.low--;
+                else stats.high--;
+                
+                const row = Math.floor((lastNumber - 1) / 3);
+                stats.rows[row]--;
+                
+                const col = (lastNumber - 1) % 3;
+                stats.columns[col]--;
+            }
+            
+            updateDisplay();
+        }
+        
+        // Add event listener for undo button
+        document.getElementById('undoButton').addEventListener('click', undoLast);
 
         updateDisplay();
     </script>
