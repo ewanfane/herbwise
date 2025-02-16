@@ -1,0 +1,274 @@
+:root {
+    --red: #c62828;
+    --black: #212121;
+    --green: #2e7d32;
+    --table-felt: #00573d;
+    --highlight: #e8f5e9;
+}
+
+/* Base Styles */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+/* Number Grid Layout */
+.number-grid-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.roulette-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--table-felt);
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.zero-cell {
+    max-height: 100px;
+    width: 97.5%;
+    grid-column: 1 / -1;
+    background: var(--green);
+    font-size: 1.2em;
+}
+
+.number-cell {
+    aspect-ratio: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    padding: 3px;
+    min-width: 50px;
+    max-height: 100px;
+}
+
+.count {
+    font-size: 0.7em;
+    opacity: 0.8;
+    margin-top: 2px;
+}
+
+/* Input Section */
+.input-section {
+    max-width: 600px;
+    margin: 0 auto 20px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+input[type="number"] {
+    padding: 8px;
+    width: 120px;
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    padding: 8px 12px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    flex: 1;
+    transition: opacity 0.2s;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+/* History Grid */
+.history {
+    margin-top: 15px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 3px;
+    margin-top: 10px;
+}
+
+.number-item {
+    padding: 8px;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+}
+
+/* Stats Section */
+.stats-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.scrollable {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.separated-section {
+    margin-bottom: 20px;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    margin-top: 10px;
+    font-size: 0.9em;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.highlight {
+    background-color: var(--highlight);
+}
+
+/* Responsive Design */
+@media (max-width: 767px) {
+    .number-cell {
+        font-size: 0.9em;
+    }
+    
+    .count {
+        font-size: 0.6em;
+    }
+}
+
+@media (min-width: 768px) {
+    .number-cell {
+        font-size: 1.1em;
+        padding: 8px;
+        min-width: 70px;
+    }
+    
+    .count {
+        font-size: 0.8em;
+    }
+}
+
+@media (min-width: 1024px) {
+    .main-grid {
+        grid-template-columns: 600px 1fr; /* Reduced from 800px */
+    }
+    
+    .number-grid-container {
+        grid-column: 1;
+        margin: 0;
+    }
+    
+    .stats-section {
+        grid-column: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        position: sticky;
+        top: 20px;
+        height: min-content;
+    }
+    
+    .roulette-grid {
+        gap: 3px;
+        padding: 10px;
+    }
+    
+    .number-cell {
+        min-width: 60px; /* Reduced from 80px */
+        padding: 6px; /* Reduced from 10px */
+        font-size: 1.1em; /* Reduced from 1.2em */
+    }
+    
+    .count {
+        font-size: 0.9em;
+    }
+    
+    .stat-card {
+        padding: 20px;
+    }
+}
+
+
+.suggested-numbers {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.suggested-numbers .number-item {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+}
+
+.suggested-row-column div {
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+
+.suggestion-item {
+    background-color: #4CAF50;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin: 2px;
+    display: inline-block;
+    font-size: 0.9em;
+}
+
+.no-suggestion {
+    color: #888;
+    font-style: italic;
+}
+
+.suggested-row-column div {
+    margin: 8px 0;
+    padding: 6px;
+    background: #f8f8f8;
+    border-radius: 4px;
+}

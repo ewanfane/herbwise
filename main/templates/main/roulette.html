@@ -1,236 +1,10 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>Roulette Odds Calculator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        :root {
-            --red: #c62828;
-            --black: #212121;
-            --green: #2e7d32;
-            --table-felt: #00573d;
-            --highlight: #e8f5e9;
-        }
-        
-        /* Base Styles */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-        
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-            align-items: start;
-        }
-        
-        /* Number Grid Layout */
-        .number-grid-container {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .roulette-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2px;
-            background: var(--table-felt);
-            padding: 5px;
-            border-radius: 8px;
-        }
-        
-        .zero-cell {
-            max-height: 100px;
-            width: 97.5%;
-            grid-column: 1 / -1;
-            background: var(--green);
-            font-size: 1.2em;
-        }
-        
-        .number-cell {
-            aspect-ratio: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            padding: 3px;
-            min-width: 50px;
-        }
-        
-        .count {
-            font-size: 0.7em;
-            opacity: 0.8;
-            margin-top: 2px;
-        }
-        
-        /* Input Section */
-        .input-section {
-            max-width: 600px;
-            margin: 0 auto 20px;
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        input[type="number"] {
-            padding: 8px;
-            width: 120px;
-            flex: 1;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        
-        button {
-            padding: 8px 12px;
-            cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            flex: 1;
-            transition: opacity 0.2s;
-        }
-        
-        button:hover {
-            opacity: 0.9;
-        }
-        
-        /* History Grid */
-        .history {
-            margin-top: 15px;
-        }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-            gap: 3px;
-            margin-top: 10px;
-        }
-        
-        .number-item {
-            padding: 8px;
-            text-align: center;
-            border-radius: 4px;
-            font-size: 0.9em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            aspect-ratio: 1;
-        }
-        
-        /* Stats Section */
-        .stats-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .scrollable {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        
-        .separated-section {
-            margin-bottom: 20px;
-        }
-        
-        /* Tables */
-        table {
-            width: 100%;
-            margin-top: 10px;
-            font-size: 0.9em;
-            border-collapse: collapse;
-        }
-        
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .highlight {
-            background-color: var(--highlight);
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 767px) {
-            .number-cell {
-                font-size: 0.9em;
-            }
-            
-            .count {
-                font-size: 0.6em;
-            }
-        }
-        
-        @media (min-width: 768px) {
-            .number-cell {
-                font-size: 1.1em;
-                padding: 8px;
-                min-width: 70px;
-            }
-            
-            .count {
-                font-size: 0.8em;
-            }
-        }
-        
-        @media (min-width: 1024px) {
-            .main-grid {
-                grid-template-columns: 600px 1fr; /* Reduced from 800px */
-            }
-            
-            .number-grid-container {
-                grid-column: 1;
-                margin: 0;
-            }
-            
-            .stats-section {
-                grid-column: 2;
-                display: flex;
-                flex-direction: column;
-                gap: 20px;
-                position: sticky;
-                top: 20px;
-                height: min-content;
-            }
-            
-            .roulette-grid {
-                gap: 3px;
-                padding: 10px;
-            }
-            
-            .number-cell {
-                min-width: 60px; /* Reduced from 80px */
-                padding: 6px; /* Reduced from 10px */
-                font-size: 1.1em; /* Reduced from 1.2em */
-            }
-            
-            .count {
-                font-size: 0.9em;
-            }
-            
-            .stat-card {
-                padding: 20px;
-            }
-        }
-        </style>
+    <link rel="stylesheet" href="{% static 'main/roulette.css' %}">
 </head>
 <body>
     <div class="container">
@@ -298,6 +72,17 @@
                         <tr><th>Column</th><th>Count</th><th>%</th></tr>
                         <tbody id="columnStats"></tbody>
                     </table>
+                </div>
+
+                <div class="suggestions-section">
+                    <div class="stat-card">
+                        <h3>Probabilistic Numbers</h3>
+                        <div class="suggested-numbers" id="suggestedNumbers"></div>
+                        <div class="suggested-row-column">
+                            <div>Probabilistic Rows: <span id="suggestedRow">None</span></div>
+                            <div>Probabilistic Columns: <span id="suggestedColumn">None</span></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -372,7 +157,126 @@
             }).join('');
         }
 
+        function calculateSuggestedNumbers() {
+            const numbers = Array.from({ length: 37 }, (_, i) => i); // 0-36
+            const counts = numbers.map(num => stats.numbers[num] || 0);
+            const minCount = Math.min(...counts.filter(c => c !== undefined));
+            let candidates = numbers.filter(num => counts[num] === minCount);
+        
+            // Filter by red/black
+            const totalNonZeroColor = stats.red + stats.black;
+            if (totalNonZeroColor > 0) {
+                const redPercent = (stats.red / totalNonZeroColor) * 100;
+                const threshold = 5;
+                if (Math.abs(redPercent - 50) >= threshold) {
+                    if (redPercent > 50) {
+                        candidates = candidates.filter(num => num === 0 || !redNumbers.has(num));
+                    } else {
+                        candidates = candidates.filter(num => num === 0 || redNumbers.has(num));
+                    }
+                }
+            }
+        
+            // Filter by high/low
+            const totalNonZeroHL = stats.high + stats.low;
+            if (totalNonZeroHL > 0) {
+                const highPercent = (stats.high / totalNonZeroHL) * 100;
+                const threshold = 5;
+                if (Math.abs(highPercent - 50) >= threshold) {
+                    if (highPercent > 50) {
+                        candidates = candidates.filter(num => num === 0 || num <= 18);
+                    } else {
+                        candidates = candidates.filter(num => num === 0 || num >= 19);
+                    }
+                }
+            }
+        
+            // Filter by even/odd
+            const totalNonZeroEO = stats.even + stats.odd;
+            if (totalNonZeroEO > 0) {
+                const evenPercent = (stats.even / totalNonZeroEO) * 100;
+                const threshold = 5;
+                if (Math.abs(evenPercent - 50) >= threshold) {
+                    if (evenPercent > 50) {
+                        candidates = candidates.filter(num => num === 0 || num % 2 !== 0);
+                    } else {
+                        candidates = candidates.filter(num => num === 0 || num % 2 === 0);
+                    }
+                }
+            }
+            
+
+            
+    
+            
+        
+            // Determine row suggestions
+            const rowGroups = Array(12).fill().map((_,i) => []);
+            candidates.forEach(num => {
+                if (num === 0) return;
+                const row = getRow(num);
+                if (row !== -1) rowGroups[row].push(num);
+            });
+
+            // Sort rows by candidate count descending
+            const sortedRows = rowGroups
+                .map((nums, index) => ({ row: index+1, count: nums.length }))
+                .sort((a,b) => b.count - a.count || a.row - b.row); // Tiebreaker: lower row first
+
+                    // Get rows with max count (handle ties)
+                    const maxRowCount = sortedRows[0]?.count || 0;
+                    const suggestedRows = sortedRows
+                        .filter(r => r.count === maxRowCount && r.count > 0)
+                        .map(r => `Row ${(r.row-1)*3+1}-${r.row*3}`);
+
+                    // Determine column suggestions (same logic)
+                    const colGroups = Array(3).fill().map((_,i) => []);
+                    candidates.forEach(num => {
+                        if (num === 0) return;
+                        const col = getColumn(num);
+                        if (col !== -1) colGroups[col].push(num);
+                    });
+
+                    const sortedCols = colGroups
+                        .map((nums, index) => ({ col: index+1, count: nums.length }))
+                        .sort((a,b) => b.count - a.count || a.col - b.col);
+
+                    const maxColCount = sortedCols[0]?.count || 0;
+                    const suggestedCols = sortedCols
+                        .filter(c => c.count === maxColCount && c.count > 0)
+                        .map(c => `Column ${c.col}`);
+
+                    
+                    return {
+                        numbers: candidates,
+                        rows: suggestedRows,
+                        columns: suggestedCols
+                    };
+        }
+
         function updateDisplay() {
+
+            const suggested = calculateSuggestedNumbers();
+            const suggestedNumbersDiv = document.getElementById('suggestedNumbers');
+            
+            // Modified section for suggested numbers display
+            
+                suggestedNumbersDiv.innerHTML = suggested.numbers.map(num => `
+                    <div class="number-item" style="background:${getNumberColor(num)}">
+                        ${num}
+                    </div>
+                `).join('');
+            
+
+            document.getElementById('suggestedRow').innerHTML = suggested.rows.length > 0
+                ? suggested.rows.map(r => `<span class="suggestion-item">${r}</span>`).join(', ')
+                : '<span class="no-suggestion">None</span>';
+
+            document.getElementById('suggestedColumn').innerHTML = suggested.columns.length > 0
+                ? suggested.columns.map(c => `<span class="suggestion-item">${c}</span>`).join(', ')
+                : '<span class="no-suggestion">None</span>';
+
+
             // History grid
             document.getElementById('historyGrid').innerHTML = 
                 stats.history.slice(-25).reverse().map(num => `
@@ -497,6 +401,7 @@
                         </tr>
                     `).join('') ||
                 '<tr><td colspan="3">No pairs yet</td></tr>';
+                
         }
 
         document.getElementById('addButton').addEventListener('click', () => {
@@ -554,6 +459,8 @@
                 
                 const col = (lastNumber - 1) % 3;
                 stats.columns[col]--;
+
+                
             }
             
             updateDisplay();
