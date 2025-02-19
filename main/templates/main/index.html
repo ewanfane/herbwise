@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HerbWise</title>
+    <link rel="stylesheet" href="{% static 'main/css/main.css' %}">
+    <style>
+        body {
+            background: url('{% static "main/assets/images/sky_1.png" %}') no-repeat bottom center;
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- First Section -->
+        <header>
+            <nav>
+                <a href="#">Log in</a>
+                <span>|</span>
+                <a href="#">Register</a>
+            </nav>
+        </header>
+        <div class="main-content">
+            <!-- <div class="text-section"> -->
+            <div class="main-title">
+                <h1>Herb <br> <span class="spaced-word">Wise</span></h1>
+            </div>
+            <div class="description">
+                <p>With our help you can take caring after your plants on next level: sensors will let you know
+                    real-time
+                    data about each plant and water them for you to provide the best environment!</p>
+            </div>
+        </div>
+
+        <!-- Info Section (((Icons))) -->
+        <div class="info-section">
+            <div id="plant-louie">
+                <img src="{% static 'main/assets/images/1st_icon.png' %}" alt="Plant Louie">
+            </div>
+            <div class="box">
+                <img src="{% static 'main/assets/images/2nd_icon.png' %}" alt="Sensors">
+            </div>
+            <div class="box">
+                <img src="{% static 'main/assets/images/3rd_icon.png' %}" alt="Upload">
+            </div>
+            <div class="box">
+                <img src="{% static 'main/assets/images/4th_icon.png' %}" alt="Notifications">
+            </div>
+        </div>
+
+        <!-- Third Section -->
+        <div class="section">
+            <div class="plant-content">
+                <div class="plant-container">
+                    <img src="{% static 'main/assets/images/main_plant.png' %}" alt="Plant" class="plant-image">
+                </div>
+                <div class="text-box">
+                    <div class="button-container">
+                        <button class="my-garden-btn" onclick="location.href='{% url 'gardens' %}'">My Garden</button>
+                    </div>
+                    <p class="bottom-text-box">We take care of your plants for you!</p>
+                    <img src="{% static 'main/assets/images/wateringcan.png' %}" alt="Watering Icon" class="watering-icon">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garden Details</title>
+    <link rel="stylesheet" href="/css/garden-details.css">
+    <link rel="stylesheet" href="{% static 'main/css/garden-details.css' %}">
+    <style>
+        body {
+            background-image: url('{% static 'main/assets/icon/background4.png' %}');
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header displaying the garden name -->
+    <header>
+        <h1>{{garden_name}}</h1> <!-- This will be dynamically updated -->
+        <nav>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'gardens' %}">Back</a>
+            <!-- <button onclick="location.href='/index.html'">Home</a> -->
+        </nav>
+    </header>
+
+    <main>
+        <!-- Container for plant cards -->
+        <section id="plant-container">
+            <section class="plant-card" data-garden-name="My first plant 1">
+                <img class="plant-settings" src="{% static 'main/assets/icon/settings-icon.png' %}" alt="Settings">
+                <img src="{% static 'main/assets/icon/plant7.png' %}" alt="Plant">
+                <figcaption>My first plant 1</figcaption>
+            </section>
+            <!-- Plant cards will be added dynamically here -->
+
+            <!-- Add Plant Button -->
+            <section id="add-plant-card" class="plant-card">
+                <img src="{% static 'main/assets/icon/add-bookmark.png' %}" alt="Add Plant">
+                <figcaption>Add Plant</figcaption>
+            </section>
+        </section>
+    </main>
+
+    <script src="{% static 'main/js/garden-details.js' %} "></script>
+</body>
+
+</html>

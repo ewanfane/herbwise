@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Gardens</title>
+    <link rel="stylesheet" href="{% static 'main/css/styles.css' %}">
+    <style>
+        body {
+            background-image: url('{% static 'main/assets/icon/background3.png' %}');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>My Gardens</h1>
+        <nav>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'home' %}">Back</a>
+        </nav>
+    </header>
+    <main>
+        <section id="garden-container">
+            <section class="garden-card" data-garden-name="My first garden 1">
+                <img class="garden-settings" src="{% static 'main/assets/icon/settings-icon.png' %}" alt="Settings">
+                <img src="{% static 'main/assets/icon/pot.webp' %}" alt="Garden Pot">
+                <figcaption>My first garden 1</figcaption>
+            </section>
+            <section id="add-garden-card" class="garden-card">
+                <img src="{% static 'main/assets/icon/add-bookmark.png' %}" alt="Add Garden">
+                <figcaption>Add Garden</figcaption>
+            </section>
+        </section>
+    </main>
+    <script>
+        window.GARDEN_DETAILS_URL = "{% url 'garden_details' %}";
+    </script>
+    <script src="{% static 'main/js/script.js' %}"></script>
+</body>
+
+</html>
