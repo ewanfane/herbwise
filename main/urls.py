@@ -2,8 +2,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.main_view, name='main'),
+    path('', views.home, name='home'),
+    path('gardens/', views.gardens, name='gardens'),
+    path('garden_details', views.garden_details, name='garden_details'),
+
     path('delete_record/<int:record_id>/', views.delete_record, name='delete_record'),
     path('api/receive/', views.receive_data, name='receive_data'),
-    path('roulette/', views.roulette_view, name='roulette'),
 ]

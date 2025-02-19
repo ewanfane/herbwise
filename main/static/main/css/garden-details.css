@@ -1,0 +1,140 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    /* background-image: url('pics/background4.png');  */
+    background-size: cover;
+    background-position: center;
+    font-family: 'Montagu Slab', serif;
+    color: white;
+    text-align: center;
+}
+
+/* Position the header at the top */
+header {
+    position: absolute;
+    top: 5%;
+    font-size: 2.5rem;
+    font-family: 'Montagu Slab', serif;
+}
+/* Navigation */
+nav {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+nav a{
+    color:whitesmoke;
+    text-decoration: none;
+    margin: 0 0.5rem;
+    font-size: 1rem;
+    color:whitesmoke;
+    transition: color 0.3s ease;    
+}
+nav a:hover {
+    color: darkgreen;
+}
+
+/* Container for plant cards */
+#plant-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Style for the plant card */
+.plant-card {
+    position: relative; /* Reference point for the settings icon */
+    background-color: rgba(0, 0, 0, 0.7); /* Dark semi-transparent background */
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 200px;
+    cursor: pointer;
+}
+
+/* Style for the settings icon */
+.plant-settings {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: auto;
+    height: auto;
+    max-width: 30px;
+    max-height: 30px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+/* Style the image */
+.plant-card img {
+    width: 100%;
+    border-radius: 5px;
+}
+
+/* Style the caption */
+figcaption {
+    margin-top: 10px;
+    font-size: 1.2rem;
+}
+
+/* Style for the 'Add Plant' card */
+#add-plant-card {
+    opacity: 0.7;
+}
+
+#add-plant-card:hover {
+    opacity: 1;
+}
+
+/* Center the menu inside the plant card */
+.plant-menu {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 8px;
+    padding: 10px;
+    display: none;
+    list-style: none;
+    z-index: 10;
+}
+
+/* Make the menu visible when it has the 'show' class */
+.plant-menu.show {
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Add a hover effect for the options */
+.plant-menu li {
+    color: white;
+    font-size: 1.2rem;
+    padding: 8px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.plant-menu li:hover {
+    background-color: #555;
+    border-radius: 4px;
+}
+
+/* Fade-in animation for the menu */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Fade-out animation for the menu */
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
