@@ -1,4 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".plant-card").forEach(card => {
+        const plantId = card.querySelector(".sensor-data-container").dataset.plantId;
+        if (plantId) {
+            fetchLatestRecord(plantId);
+        }
+    });
+    
     // Get the garden name from the URL query parameter
     const urlParams = new URLSearchParams(window.location.search);
     const gardenName = urlParams.get('gardenName');
@@ -83,6 +90,37 @@ function renamePlant(card) {
 function deletePlant(card) {
     card.remove();
 }
+
+function fetchLatestRecord(plantId) {
+    fetch(`/latest_record/${plantId}/`)  // ✅ Correct syntax
+
+        .then(response => response.json())
+        .then(data => {
+            if (!data.error) {
+                document.getElementById("temperature").innerText = data.temperature + "°C";
+                document.getElementById("humidity").innerText = data.humidity + "%";
+                document.getElementById("soilMoisture").innerText = data.soil_moisture + "%";
+                document.getElementById("light").innerText = data.light + " lux";
+            } else {
+                document.getElementById("temperature").innerText = "-";
+                document.getElementById("humidity").innerText = "-";
+                document.getElementById("soilMoisture").innerText = "-";
+                document.getElementById("light").innerText = "-";
+            }
+        })
+        .catch(error => console.error("Error fetching data:", error));
+}
+
+// Call function every 5 seconds (for real-time updates)
+setInterval(() => {
+    document.querySelectorAll(".plant-card").forEach(card => {
+        const plantId = card.querySelector(".sensor-data-container").dataset.plantId;
+        if (plantId) {
+            fetchLatestRecord(plantId);
+        }
+    });
+}, 5000);
+
 
 // Close the menu when clicking outside
 document.addEventListener("click", function (event) {

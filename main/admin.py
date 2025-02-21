@@ -1,6 +1,9 @@
 from django.contrib import admin
+from main.models import *  
 
-from main.models import *
 
-# Register your models here.
-admin.site.register(Record)
+
+# Register new models
+admin.site.register(Garden)
+admin.site.register(Plant)
+admin.site.register(SensorData)

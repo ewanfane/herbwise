@@ -48,15 +48,7 @@ nav a:hover {
 }
 
 /* Style for the plant card */
-.plant-card {
-    position: relative; /* Reference point for the settings icon */
-    background-color: rgba(0, 0, 0, 0.7); /* Dark semi-transparent background */
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    width: 200px;
-    cursor: pointer;
-}
+
 
 /* Style for the settings icon */
 .plant-settings {
@@ -71,11 +63,7 @@ nav a:hover {
     z-index: 10;
 }
 
-/* Style the image */
-.plant-card img {
-    width: 100%;
-    border-radius: 5px;
-}
+
 
 /* Style the caption */
 figcaption {
@@ -112,14 +100,7 @@ figcaption {
     animation: fadeIn 0.3s ease-out;
 }
 
-/* Add a hover effect for the options */
-.plant-menu li {
-    color: white;
-    font-size: 1.2rem;
-    padding: 8px;
-    cursor: pointer;
-    text-align: center;
-}
+
 
 .plant-menu li:hover {
     background-color: #555;
@@ -138,3 +119,64 @@ figcaption {
     to { opacity: 0; }
 }
 
+.plant-card {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.536);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    width: 350px;  /* Increased width */
+    word-wrap: break-word;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.plant-card:hover {
+    transform: scale(1.05);  /* Hover effect */
+}
+
+/* Style the plant image */
+.plant-card img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+/* Improved sensor data container */
+.sensor-data-container {
+    background-color: rgba(0, 0, 0, 0.457);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-family: 'Arial', sans-serif;
+    color: #ebebeb;
+    border: 1px solid #28171765;
+    gap: 8px;
+    
+}
+
+/* Each row of sensor data */
+.sensor-data-container div {
+
+    align-items: center;
+    padding: 6px;
+    font-size: 1rem;
+    background: rgba(17, 12, 12, 0.103);
+    border-radius: 6px;
+}
+
+/* Align labels and values */
+.sensor-data-container strong {
+    margin-left: 5px;
+}
+
+.sensor-data-container span {
+    margin-left: auto;
+    font-weight: bold;
+}
+
+/* Add colors based on sensor status */
+.good { color: green; }
+.warning { color: orange; }
+.danger { color: red; }
