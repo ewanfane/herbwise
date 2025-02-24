@@ -59,7 +59,7 @@ document.getElementById("plant-container").addEventListener("click", function (e
 });
 
 // Add a new plant card when the "Add Plant" card is clicked
-document.getElementById("add-plant-card").addEventListener("click", function (event) {
+/*document.getElementById("add-plant-card").addEventListener("click", function (event) {
     event.stopPropagation(); // Prevent other click events from triggering
 
     const plantName = prompt("Enter the name of your new plant:");
@@ -75,7 +75,7 @@ document.getElementById("add-plant-card").addEventListener("click", function (ev
 
         document.getElementById("plant-container").insertBefore(newPlant, document.getElementById("add-plant-card"));
     }
-});
+});*/
 
 // Rename Plant function
 function renamePlant(card) {
