@@ -1,8 +1,10 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
-from .models import Garden, Plant, SensorData  # Explicit import of correct models
+from .models import Garden, Plant, SensorData  
 import json
+from django.contrib.auth.models import User 
+from django.shortcuts import redirect, render
 
 def home(request):
     return render(request, 'main/index.html')
@@ -12,6 +14,9 @@ def gardens(request):
 
 def garden_details(request):
     return render(request, 'main/garden-details.html', {'garden_name': 'Garden 1'})
+
+def add_plant(request):
+    return render(request, 'main/add_plant.html')
 
 @csrf_exempt 
 def receive_data(request):
@@ -60,6 +65,32 @@ def latest_record(request, plant_id):
         return JsonResponse({"error": "No data available"}, status=404)
     except Plant.DoesNotExist:
         return JsonResponse({"error": "Plant not found"}, status=404)
+
+
+def add_plant(request):
+    """ Handles form submission for creating a new plant. """
+    if request.method == "POST":
+        plant_name = request.POST.get("plant_name")  # Get plant name from form
+        plant_type = request.POST.get("plant_type")  # Get plant type
+        hardware_id = request.POST.get("hardware_id")  # Get hardware ID
+
+        user = User.objects.first()  # Get any existing user
+        if not user:
+            user = User.objects.create_user(username="defaultuser", password="password123")
+        # Ensure user has a garden
+        garden = Garden.objects.filter(user=user, name="Default Garden").first()
+        garden, created = Garden.objects.get_or_create(user=user, defaults={"name": "Default Garden"})
+        # Create and save the new plant
+        Plant.objects.create(
+            garden=garden,
+            name=plant_name,
+            species=plant_type,
+            hardware_id=hardware_id
+        )
+
+        return redirect("gardens")
+
+    return render(request, "main/add_plant.html")
 
 @csrf_exempt
 def delete_record(request, record_id):

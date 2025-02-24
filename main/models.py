@@ -14,7 +14,8 @@ class Garden(models.Model):
 class Plant(models.Model):
     garden = models.ForeignKey(Garden, on_delete=models.CASCADE)  # Link to a garden
     name = models.CharField(max_length=100)  # Plant name
-    species = models.CharField(max_length=100, blank=True, null=True)  # Optional species (for DB plants)
+    species = models.CharField(max_length=100, blank=True, null=True)
+    hardware_id = models.CharField(max_length=100, blank=True, null=True) # Optional species (for DB plants)
     optimal_temperature = models.FloatField(blank=True, null=True)
     optimal_humidity = models.FloatField(blank=True, null=True)
     optimal_soil_moisture = models.FloatField(blank=True, null=True)
