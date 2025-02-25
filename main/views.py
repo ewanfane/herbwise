@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Garden, Plant, SensorData  
 import json
 from django.contrib.auth.models import User 
@@ -13,7 +13,12 @@ def gardens(request):
     return render(request, 'main/gardens.html')
 
 def garden_details(request):
-    return render(request, 'main/garden-details.html', {'garden_name': 'Garden 1'})
+    plants = Plant.objects.all()
+    return render(request, 'main/garden-details.html', {
+        'garden_name': 'Garden 1',
+        'plants': plants
+    })
+
 
 def add_plant(request):
     return render(request, 'main/add_plant.html')
@@ -24,13 +29,13 @@ def receive_data(request):
         try:
             data = json.loads(request.body)  # Parse JSON data
 
-            # Get the plant ID from the incoming data
-            plant_id = data.get("plant_id")  
-            if not plant_id:
-                return JsonResponse({"success": False, "error": "Plant ID is required"}, status=400)
+            # Get the hardware ID from the request
+            hardware_id = data.get("hardware_id")  
+            if not hardware_id:
+                return JsonResponse({"success": False, "error": "Hardware ID is required"}, status=400)
 
             try:
-                plant = Plant.objects.get(id=plant_id)  # Retrieve the correct plant
+                plant = Plant.objects.get(hardware_id=hardware_id)  # Retrieve the correct plant
             except Plant.DoesNotExist:
                 return JsonResponse({"success": False, "error": "Plant not found"}, status=404)
 
@@ -52,8 +57,10 @@ def receive_data(request):
 
 def latest_record(request, plant_id):
     """ Fetch the latest sensor data for a specific plant """
+    plant = get_object_or_404(Plant, id=plant_id)
     try:
-        latest = SensorData.objects.filter(plant_id=plant_id).order_by('-timestamp').first()
+        latest = SensorData.objects.filter(plant=plant).order_by('-timestamp').first()
+
         if latest:
             return JsonResponse({
                 "timestamp": latest.timestamp,
@@ -91,6 +98,15 @@ def add_plant(request):
         return redirect("gardens")
 
     return render(request, "main/add_plant.html")
+
+def plant_dashboard(request, plant_id):
+    """ Display a dashboard for a specific plant """
+    plant = get_object_or_404(Plant, id=plant_id)
+
+    # Fetch all sensor data linked to this plant
+    sensor_data = SensorData.objects.filter(plant=plant).order_by('-timestamp')
+
+    return render(request, "main/plant_dashboard.html", {"plant": plant, "sensor_data": sensor_data})
 
 @csrf_exempt
 def delete_record(request, record_id):

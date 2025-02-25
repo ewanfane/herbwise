@@ -1,10 +1,21 @@
 document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".plant-card").forEach(card => {
-        const plantId = card.querySelector(".sensor-data-container").dataset.plantId;
-        if (plantId) {
-            fetchLatestRecord(plantId);
+    console.log("Fetching sensor data for all plants...");
+
+    const containers = document.querySelectorAll(".sensor-data-container");
+
+    containers.forEach(container => {
+        const plantId = container.dataset.plantId;
+
+        if (!plantId) {
+            console.error("No plant ID found in dataset!");
+            return;
         }
+
+        console.log(`Fetching data for plant ${plantId}`);
+        fetchLatestRecord(plantId, container);
     });
+
+
     
     // Get the garden name from the URL query parameter
     const urlParams = new URLSearchParams(window.location.search);
@@ -59,7 +70,7 @@ document.getElementById("plant-container").addEventListener("click", function (e
 });
 
 // Add a new plant card when the "Add Plant" card is clicked
-/*document.getElementById("add-plant-card").addEventListener("click", function (event) {
+document.getElementById("add-plant-card").addEventListener("click", function (event) {
     event.stopPropagation(); // Prevent other click events from triggering
 
     const plantName = prompt("Enter the name of your new plant:");
@@ -75,7 +86,7 @@ document.getElementById("plant-container").addEventListener("click", function (e
 
         document.getElementById("plant-container").insertBefore(newPlant, document.getElementById("add-plant-card"));
     }
-});*/
+});
 
 // Rename Plant function
 function renamePlant(card) {
@@ -91,32 +102,53 @@ function deletePlant(card) {
     card.remove();
 }
 
-function fetchLatestRecord(plantId) {
-    fetch(`/latest_record/${plantId}/`)  // ✅ Correct syntax
 
+/*/+
+ * Fetches the latest sensor data for a specific plant and updates the corresponding HTML container.//+
+ * //+
+ * @param {string|number} plantId - The unique identifier of the plant.//+
+ * @param {HTMLElement} [container] - The HTML container element to update with the fetched data. If not provided, the function attempts to find it using the plantId.//+
+ * @returns {void} This function doesn't return a value, it updates the DOM directly.//+
+ *///+
+function fetchLatestRecord(plantId, container) {
+    fetch(`/latest_record/${plantId}/`)
         .then(response => response.json())
         .then(data => {
+            console.log(`Data for plant ID ${plantId}:`, data);
             if (!data.error) {
-                document.getElementById("temperature").innerText = data.temperature + "°C";
-                document.getElementById("humidity").innerText = data.humidity + "%";
-                document.getElementById("soilMoisture").innerText = data.soil_moisture + "%";
-                document.getElementById("light").innerText = data.light + " lux";
+                // Find the container if it wasn't provided
+                if (!container) {
+                    container = document.querySelector(`.sensor-data-container[data-plant-id="${plantId}"]`);
+                    if (!container) {
+                        console.error(`Container for plant ID ${plantId} not found`);
+                        return;
+                    }
+                }
+
+                container.querySelector(".temperature").innerText = `🌡️ ${data.temperature} °C`;
+                container.querySelector(".humidity").innerText = `💧 ${data.humidity} %`;
+                container.querySelector(".soilMoisture").innerText = `🌱 ${data.soil_moisture}`;
+                container.querySelector(".light").innerText = `☀️ ${data.light}`;
             } else {
-                document.getElementById("temperature").innerText = "-";
-                document.getElementById("humidity").innerText = "-";
-                document.getElementById("soilMoisture").innerText = "-";
-                document.getElementById("light").innerText = "-";
+                if (container) {
+                    container.querySelector(".temperature").innerText = "-";
+                    container.querySelector(".humidity").innerText = "-";
+                    container.querySelector(".soilMoisture").innerText = "-";
+                    container.querySelector(".light").innerText = "-";
+                }
             }
         })
         .catch(error => console.error("Error fetching data:", error));
 }
 
+
 // Call function every 5 seconds (for real-time updates)
 setInterval(() => {
-    document.querySelectorAll(".plant-card").forEach(card => {
-        const plantId = card.querySelector(".sensor-data-container").dataset.plantId;
+    const containers = document.querySelectorAll(".sensor-data-container");
+    containers.forEach(container => {
+        const plantId = container.dataset.plantId;
         if (plantId) {
-            fetchLatestRecord(plantId);
+            fetchLatestRecord(plantId, container);
         }
     });
 }, 5000);
