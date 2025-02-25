@@ -27,28 +27,32 @@
 
     <main>
         <!-- Container for plant cards -->
+        {% for plant in plants %}
         <section id="plant-container">
-            <section class="plant-card" data-garden-name="My first plant 1">
-                <img class="plant-settings" src="{% static 'main/assets/icon/settings-icon.png' %}" alt="Settings">
-                <img src="{% static 'main/assets/icon/plant7.png' %}" alt="Plant">
-                <figcaption>My first plant 1</figcaption>
 
-                <div class="sensor-data-container" id="sensor-data" data-plant-id="1">
+                <section class="plant-card" data-garden-name="{{ plant.name }}">
+                    <a href="{% url 'plant_dashboard' plant.id %}" class="plant-card-link">
+                        <img class="plant-settings" src="{% static 'main/assets/icon/settings-icon.png' %}" alt="Settings">
+                        <img src="{% static 'main/assets/icon/plant7.png' %}" alt="Plant">
+                        <figcaption>{{ plant.name }}</figcaption>
+                    </a>
 
-                    <div>🌡️ <strong>Temperature:</strong> <span id="temperature">Loading...</span></div>
-                    <div>💧 <strong>Humidity:</strong> <span id="humidity">Loading...</span></div>
-                    <div>🌱 <strong>Soil Moisture:</strong> <span id="soilMoisture">Loading...</span></div>
-                    <div>☀️ <strong>Light Level:</strong> <span id="light">Loading...</span></div>
-                </div>
-                
-                <script>
-                    const plantId = document.getElementById("sensor-data").dataset.plantId;
-                    if (plantId) {
-                        fetchLatestRecord(plantId);
-                    }
-                </script>
 
-            </section>
+                    <div class="sensor-data-container" data-plant-id="{{ plant.id }}">
+                        <div>🌡️ <strong>Temperature:</strong> <span class="temperature">Loading...</span></div>
+                        <div>💧 <strong>Humidity:</strong> <span class="humidity">Loading...</span></div>
+                        <div>🌱 <strong>Soil Moisture:</strong> <span class="soilMoisture">Loading...</span></div>
+                        <div>☀️ <strong>Light Level:</strong> <span class="light">Loading...</span></div>
+                    </div>
+                        
+                </section>
+  
+        </section>
+        {% endfor %}
+
+
+
+            
             <!-- Plant cards will be added dynamically here -->
 
             <!-- Add Plant Button -->

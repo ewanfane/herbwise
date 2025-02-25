@@ -1,56 +1,108 @@
+/* garden-details.css */
 body {
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    /* background-image: url('pics/background4.png');  */
-    background-size: cover;
-    background-position: center;
     font-family: 'Montagu Slab', serif;
     color: white;
     text-align: center;
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
 }
 
-/* Position the header at the top */
+/* Header Styling */
 header {
     position: absolute;
     top: 5%;
-    font-size: 2.5rem;
-    font-family: 'Montagu Slab', serif;
+    width: 100%;
+    text-align: center;
 }
+
+header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    font-weight: normal;
+}
+
 /* Navigation */
 nav {
     position: absolute;
     top: 1rem;
     right: 1rem;
 }
-nav a{
-    color:whitesmoke;
+
+nav a {
+    color: whitesmoke;
     text-decoration: none;
     margin: 0 0.5rem;
     font-size: 1rem;
-    color:whitesmoke;
-    transition: color 0.3s ease;    
+    transition: color 0.3s ease;
 }
+
 nav a:hover {
     color: darkgreen;
 }
 
-/* Container for plant cards */
+/* Main Content */
+main {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding-top: 15vh; /* Adjust to make room for header */
+    min-height: 85vh;
+}
+
+/* Plant Container */
 #plant-container {
     display: flex;
+    flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
     align-items: center;
+    margin: 20px;
+    max-width: 1200px;
 }
 
-/* Style for the plant card */
+/* Plant Card Styling */
+.plant-card {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 250px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
+.plant-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
 
-/* Style for the settings icon */
+.plant-card-link {
+    color: white;
+    text-decoration: none;
+    display: block;
+}
+
+/* Plant Card Images */
+.plant-card img:not(.plant-settings) {
+    width: 80%;
+    max-height: 120px;
+    object-fit: contain;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* Plant Card Caption */
+.plant-card figcaption {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    color: white;
+}
+
+/* Settings Icon */
 .plant-settings {
     position: absolute;
     top: 10px;
@@ -61,26 +113,59 @@ nav a:hover {
     max-height: 30px;
     cursor: pointer;
     z-index: 10;
+    opacity: 0.7;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-
-
-/* Style the caption */
-figcaption {
-    margin-top: 10px;
-    font-size: 1.2rem;
+.plant-settings:hover {
+    opacity: 1;
+    transform: rotate(30deg);
 }
 
-/* Style for the 'Add Plant' card */
+/* Sensor Data Container */
+.sensor-data-container {
+    margin-top: 15px;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 12px;
+    border-radius: 8px;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.sensor-data-container div {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.sensor-data-container div:last-child {
+    margin-bottom: 0;
+}
+
+.sensor-data-container strong {
+    margin-right: 8px;
+    min-width: 80px;
+}
+
+.sensor-data-container span {
+    font-weight: bold;
+    color: #a3e635; /* Light green for sensor values */
+}
+
+/* Add Plant Card */
 #add-plant-card {
     opacity: 0.7;
+    cursor: pointer;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    transition: opacity 0.3s ease, border-color 0.3s ease;
 }
 
 #add-plant-card:hover {
     opacity: 1;
+    border-color: rgba(255, 255, 255, 0.8);
 }
 
-/* Center the menu inside the plant card */
+/* Plant Menu */
 .plant-menu {
     position: absolute;
     top: 50%;
@@ -92,91 +177,83 @@ figcaption {
     display: none;
     list-style: none;
     z-index: 10;
+    min-width: 150px;
 }
 
-/* Make the menu visible when it has the 'show' class */
 .plant-menu.show {
     display: block;
     animation: fadeIn 0.3s ease-out;
 }
 
-
+.plant-menu li {
+    color: white;
+    font-size: 1.2rem;
+    padding: 8px;
+    cursor: pointer;
+    text-align: center;
+}
 
 .plant-menu li:hover {
     background-color: #555;
     border-radius: 4px;
 }
 
-/* Fade-in animation for the menu */
+/* Loading States */
+.temperature, .humidity, .soilMoisture, .light {
+    position: relative;
+}
+
+/* Animations */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
-/* Fade-out animation for the menu */
 @keyframes fadeOut {
     from { opacity: 1; }
     to { opacity: 0; }
 }
 
-.plant-card {
-    position: relative;
-    background-color: rgba(0, 0, 0, 0.536);
-    padding: 20px;
-    border-radius: 12px;
-    text-align: center;
-    width: 350px;  /* Increased width */
-    word-wrap: break-word;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease;
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
 }
 
-.plant-card:hover {
-    transform: scale(1.05);  /* Hover effect */
+/* Loading indicator */
+.sensor-data-container span:contains("Loading...") {
+    animation: pulse 1.5s infinite;
 }
 
-/* Style the plant image */
-.plant-card img {
-    width: 100%;
-    border-radius: 8px;
-}
-
-/* Improved sensor data container */
-.sensor-data-container {
-    background-color: rgba(0, 0, 0, 0.457);
-    border-radius: 10px;
-    padding: 15px;
-    margin-top: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    font-family: 'Arial', sans-serif;
-    color: #ebebeb;
-    border: 1px solid #28171765;
-    gap: 8px;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    header {
+        position: relative;
+        top: 0;
+        padding: 20px 0;
+    }
     
+    main {
+        padding-top: 20px;
+        min-height: auto;
+    }
+    
+    #plant-container {
+        flex-direction: column;
+        width: 90%;
+    }
+    
+    .plant-card {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    nav {
+        position: relative;
+        top: 0;
+        right: 0;
+        margin: 10px 0;
+        display: flex;
+        justify-content: center;
+    }
 }
-
-/* Each row of sensor data */
-.sensor-data-container div {
-
-    align-items: center;
-    padding: 6px;
-    font-size: 1rem;
-    background: rgba(17, 12, 12, 0.103);
-    border-radius: 6px;
-}
-
-/* Align labels and values */
-.sensor-data-container strong {
-    margin-left: 5px;
-}
-
-.sensor-data-container span {
-    margin-left: auto;
-    font-weight: bold;
-}
-
-/* Add colors based on sensor status */
-.good { color: green; }
-.warning { color: orange; }
-.danger { color: red; }
