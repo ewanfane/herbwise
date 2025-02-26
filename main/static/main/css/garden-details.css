@@ -5,6 +5,7 @@ body {
     font-family: 'Montagu Slab', serif;
     color: white;
     text-align: center;
+    background-image: url("../assets/icon/background4.png");
     background-size: cover;
     background-position: center;
     min-height: 100vh;
