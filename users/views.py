@@ -11,7 +11,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()  # Get the authenticated User object
             login(request, user)
-            return redirect('home')  # Or your success URL
+            return redirect('gardens')  # Or your success URL
     else:
         form = AuthenticationForm()
     return render(request, 'users/register.html', {'form': form, 'template_type': 'login'})
@@ -42,4 +42,4 @@ def change_password_view(request):
  
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('home')

@@ -7,13 +7,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User 
 from django.shortcuts import redirect, render
 
-@login_required
+
 def home(request):
     return render(request, 'main/index.html')
 
 @login_required
 def gardens(request):
     return render(request, 'main/gardens.html')
+
+
 
 @login_required
 def garden_details(request):
@@ -23,9 +25,13 @@ def garden_details(request):
         'plants': plants
     })
 
+
+
 @login_required
 def add_plant(request):
     return render(request, 'main/add_plant.html')
+
+
 
 @csrf_exempt 
 def receive_data(request):
