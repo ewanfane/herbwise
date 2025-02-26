@@ -6,7 +6,7 @@ body {
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-image: url('assets/icon/background3.png'); 
+    background-image: url("../assets/icon/background3.png"); 
     background-size: cover;
     background-position: center;
     font-family: 'Montagu Slab', serif;
