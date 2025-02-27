@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404
+from django.utils.timezone import now, timedelta
 from .models import Garden, Plant, SensorData  
 import json
 from django.contrib.auth.models import User 
@@ -74,6 +75,39 @@ def latest_record(request, plant_id):
         return JsonResponse({"error": "Plant not found"}, status=404)
 
 
+def plant_data(request, plant_id):
+    """ Fetch sensor data for a specific plant with time filtering """
+    plant = get_object_or_404(Plant, id=plant_id)
+
+    # Get time range from request (default: "week")
+    time_range = request.GET.get("time_range", "week")
+
+    # Define time filtering
+    time_filter = {
+        "hour": now() - timedelta(hours=1),
+        "day": now() - timedelta(days=1),
+        "week": now() - timedelta(weeks=1),
+        "month": now() - timedelta(weeks=4),
+    }.get(time_range, now() - timedelta(weeks=1))
+
+    # Fetch sensor data within the selected time range
+    records = SensorData.objects.filter(plant=plant, timestamp__gte=time_filter).order_by('-timestamp')
+
+    # Format the response
+    items = []
+    for record in records:
+        items.append({
+            "timestamp": record.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+            "temperature": record.temperature,
+            "humidity": record.humidity,
+            "soil_moisture": record.soil_moisture,
+            "light": record.light,
+        })
+
+
+    return JsonResponse({"items": items})
+
+
 def add_plant(request):
     """ Handles form submission for creating a new plant. """
     if request.method == "POST":
@@ -86,7 +120,7 @@ def add_plant(request):
             user = User.objects.create_user(username="defaultuser", password="password123")
         # Ensure user has a garden
         garden = Garden.objects.filter(user=user, name="Default Garden").first()
-        garden, created = Garden.objects.get_or_create(user=user, defaults={"name": "Default Garden"})
+        garden = Garden.objects.get_or_create(user=user, defaults={"name": "Default Garden"})
         # Create and save the new plant
         Plant.objects.create(
             garden=garden,

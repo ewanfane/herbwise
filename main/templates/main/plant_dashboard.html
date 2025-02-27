@@ -7,19 +7,55 @@
     <title>{{ plant.name }} Dashboard</title>
     <link rel="stylesheet" href="{% static 'main/css/plant_dashboard.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <style>
+        body {
+            background-image: url('{% static 'main/assets/icon/background3.png' %}');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>{{ plant.name }} - Sensor History</h1>
+        <h1>{{ plant.name }} - Sensor Dashboard</h1>
         <nav>
-            <a href="{% url 'gardens' %}">Back to Gardens</a>
+            <a href="{% url 'garden_details' %}">Back to Garden</a>
+            <a href="{% url 'gardens' %}">All Gardens</a>
         </nav>
     </header>
 
     <main>
-        <canvas id="sensorChart"></canvas>
+        <!-- Hidden element for JavaScript -->
+        <div id="plant-data" data-plant-id="{{ plant.id }}" style="display: none;"></div>
+        
+        <!-- Combined chart section -->
+        <div class="chart-box main-chart">
+            <h2>Combined Sensor Data</h2>
+            <canvas id="combinedChart"></canvas>
+        </div>
+        
+        <!-- Individual sensor charts -->
+        <div class="charts-grid">
+            <div class="chart-box">
+                <h3 class="chart-title" style="color: rgb(255, 99, 132);">Temperature (°C)</h3>
+                <canvas id="temperatureChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3 class="chart-title" style="color: rgb(54, 162, 235);">Humidity (%)</h3>
+                <canvas id="humidityChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3 class="chart-title" style="color: rgb(75, 192, 192);">Soil Moisture</h3>
+                <canvas id="soil_moistureChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3 class="chart-title" style="color: rgb(255, 205, 86);">Light Level (lux)</h3>
+                <canvas id="lightChart"></canvas>
+            </div>
+        </div>
 
-        <h2>Past Sensor Readings</h2>
+        <h2>Sensor Readings History</h2>
         <table>
             <thead>
                 <tr>
@@ -27,7 +63,7 @@
                     <th>Temperature (°C)</th>
                     <th>Humidity (%)</th>
                     <th>Soil Moisture</th>
-                    <th>Light Level</th>
+                    <th>Light Level (lux)</th>
                 </tr>
             </thead>
             <tbody>
