@@ -10,6 +10,7 @@ urlpatterns = [
     path('api/receive/', views.receive_data, name='receive_data'),
     path('latest_record/<int:plant_id>/', views.latest_record, name='latest_record'),
     path('plant_dashboard/<int:plant_id>/', views.plant_dashboard, name='plant_dashboard'),
+    path("plant_data/<int:plant_id>/", views.plant_data, name="plant_data")
 
 ]
  

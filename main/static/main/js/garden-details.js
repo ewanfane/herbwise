@@ -30,7 +30,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Event delegation: Apply listener to the parent container of plant cards
+
+ // Handles click events on the plant container.
+ //This function manages the display of plant settings menu, and actions for renaming or deleting plants.
+ //It uses event delegation to handle clicks on plant cards and their settings icons.
+ //
+ // @param {Event} event - The click event object.
+ // @returns {void} This function doesn't return a value, it performs DOM manipulations directly.
+ 
 document.getElementById("plant-container").addEventListener("click", function (event) {
     const settingsIcon = event.target.closest(".plant-settings");
     const plantCard = event.target.closest(".plant-card");
