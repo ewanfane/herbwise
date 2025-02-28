@@ -24,11 +24,14 @@
             <label for="plant-name">Plant Name:</label>
             <input type="text" id="plant-name" name="plant_name" required>
 
-            <label for="plant-type">Plant Type:</label>
-            <input id="plant-type" name="plant_type" required>
-                <!-- More plant types can be added from the database -->
+            <label for="houseplant_type">Select Houseplant Type:</label>
+            <select name="houseplant_type">
+                <option value="">-- Select --</option>
+                {% for houseplant in houseplants %}
+                    <option value="{{ houseplant.id }}">{{ houseplant.name }}</option>
+                {% endfor %}
 
-
+            </select>
             <label for="hardware-id">Hardware ID (From Raspberry Pi):</label>
             <input type="text" id="hardware-id" name="hardware_id" required>
 
@@ -36,6 +39,6 @@
         </form>
     </main>
 
-    <script src="{% static 'main/js/add-plant.js' %}"></script>
+    <script src="{% static 'main/js/add_plant.js' %}"></script>
 </body>
 </html>

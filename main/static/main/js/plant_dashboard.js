@@ -31,9 +31,13 @@ document.addEventListener("DOMContentLoaded", function () {
     function fetchSensorData() {
         fetch(`/plant_data/${plantId}/`)
             .then(response => response.json())
-            .then(data => {
+            .then(responseData => {
+                // Extract thresholds from the first data item if available
+                const firstItem = responseData.items.length > 0 ? responseData.items[0] : null;
+                const thresholds = firstItem && firstItem.thresholds ? firstItem.thresholds : null;
+                
                 // Convert string timestamps to Date objects
-                const sensorData = data.items.map(item => ({
+                const sensorData = responseData.items.map(item => ({
                     timestamp: new Date(item.timestamp),
                     temperature: item.temperature,
                     humidity: item.humidity,
@@ -45,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 sensorData.sort((a, b) => a.timestamp - b.timestamp);
                 
                 // Initialize charts
-                createCharts(sensorData);
+                createCharts(sensorData, thresholds);
             })
             .catch(error => {
                 console.error("Error fetching sensor data:", error);
@@ -56,23 +60,24 @@ document.addEventListener("DOMContentLoaded", function () {
     /**
      * Create all charts with sensor data
      */
-    function createCharts(sensorData) {
-        // Create combined chart
+    function createCharts(sensorData, thresholds) {
+        // Create combined chart (without thresholds)
         createCombinedChart(sensorData);
         
-        // Create individual sensor charts
+        // Create individual sensor charts (with thresholds)
         Object.keys(sensorConfig).forEach(sensorType => {
-            createSensorChart(sensorType, sensorData);
+            createSensorChart(sensorType, sensorData, thresholds);
         });
     }
     
     /**
-     * Create the combined chart with all sensor data
+     * Create the combined chart with all sensor data (without threshold lines)
      */
     function createCombinedChart(sensorData) {
         const ctx = document.getElementById("combinedChart").getContext("2d");
         
-        new Chart(ctx, {
+        // Create the chart configuration
+        const chartConfig = {
             type: "line",
             data: {
                 datasets: Object.keys(sensorConfig).map(sensorType => {
@@ -83,6 +88,8 @@ document.addEventListener("DOMContentLoaded", function () {
                             x: item.timestamp,
                             y: item[sensorType]
                         })),
+                        borderColor: config.color,
+                        backgroundColor: config.color,
                         borderWidth: 2,
                         tension: 0.3,
                         pointRadius: 2,
@@ -141,7 +148,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             minRotation: 45
                         },
                         grid: {
-                            color: 'rgba(255, 255, 255, 0.92)'
+                            color: 'rgba(255, 255, 255, 0.1)'
                         }
                     },
                     y: {
@@ -181,13 +188,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 }
             }
-        });
+        };
+        
+        // Create chart instance 
+        new Chart(ctx, chartConfig);
     }
     
     /**
      * Create individual chart for a specific sensor
      */
-    function createSensorChart(sensorType, sensorData) {
+    function createSensorChart(sensorType, sensorData, thresholds) {
         const config = sensorConfig[sensorType];
         const ctx = document.getElementById(`${sensorType}Chart`).getContext("2d");
         
@@ -196,7 +206,8 @@ document.addEventListener("DOMContentLoaded", function () {
         gradient.addColorStop(0, config.color.replace('rgb', 'rgba').replace(')', ', 0.5)'));
         gradient.addColorStop(1, config.color.replace('rgb', 'rgba').replace(')', ', 0.0)'));
         
-        new Chart(ctx, {
+        // Create chart configuration
+        const chartConfig = {
             type: "line",
             data: {
                 datasets: [{
@@ -284,6 +295,78 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 }
             }
-        });
+        };
+        
+        // If we have thresholds for this sensor, add them to the chart
+        if (thresholds && thresholds[sensorType]) {
+            const sensorThresholds = thresholds[sensorType];
+            
+            // Add annotation plugin
+            chartConfig.options.plugins.annotation = {
+                annotations: {}
+            };
+            
+            // Min threshold line
+            if (sensorThresholds.min !== undefined) {
+                chartConfig.options.plugins.annotation.annotations.min = {
+                    type: 'line',
+                    yMin: sensorThresholds.min,
+                    yMax: sensorThresholds.min,
+                    borderColor: 'rgba(255, 0, 0, 0.5)',
+                    borderWidth: 1,
+                    borderDash: [5, 5],
+                    label: {
+                        content: 'Min',
+                        display: true,
+                        backgroundColor: 'rgba(0, 0, 0, 0)',
+                        font: { size: 8 },
+                        position: 'start'
+                    }
+                };
+            }
+            
+            // Max threshold line
+            if (sensorThresholds.max !== undefined) {
+                chartConfig.options.plugins.annotation.annotations.max = {
+                    type: 'line',
+                    yMin: sensorThresholds.max,
+                    yMax: sensorThresholds.max,
+                    borderColor: 'rgba(255, 0, 0, 0.5)',
+                    borderWidth: 1,
+                    borderDash: [5, 5],
+                    label: {
+                        content: 'Max',
+                        display: true,
+                        backgroundColor: 'rgba(0, 0, 0, 0)',
+                        font: { size: 8 },
+                        position: 'end'
+                    }
+                };
+            }
+            
+            // Preferred value line
+            if (sensorThresholds.preferred !== undefined) {
+                chartConfig.options.plugins.annotation.annotations.preferred = {
+                    type: 'line',
+                    yMin: sensorThresholds.preferred,
+                    yMax: sensorThresholds.preferred,
+                    borderColor: 'rgba(61, 105, 6, 0.32)',
+                    borderWidth: 2,
+                    label: {
+                        content: 'Ideal',
+                        display: true,
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        font: { size: 8 },
+                        position: 'center'
+                    }
+                };
+                
+       
+
+            }
+        }
+        
+        // Create chart instance with Chart.js annotation plugin
+        new Chart(ctx, chartConfig);
     }
 });
