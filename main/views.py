@@ -4,15 +4,21 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.timezone import now, timedelta
 from .models import Garden, HousePlant, Plant, SensorData  
 import json
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User 
 from django.shortcuts import redirect, render
+
 
 def home(request):
     return render(request, 'main/index.html')
 
+@login_required
 def gardens(request):
     return render(request, 'main/gardens.html')
 
+
+
+@login_required
 def garden_details(request):
     plants = Plant.objects.all()
     return render(request, 'main/garden-details.html', {
@@ -21,8 +27,12 @@ def garden_details(request):
     })
 
 
+
+@login_required
 def add_plant(request):
     return render(request, 'main/add_plant.html')
+
+
 
 @csrf_exempt 
 def receive_data(request):
@@ -56,6 +66,7 @@ def receive_data(request):
     
     return JsonResponse({"success": False, "error": "Only POST requests allowed"}, status=405)
 
+@login_required
 def latest_record(request, plant_id):
     """ Fetch the latest sensor data for a specific plant """
     plant = get_object_or_404(Plant, id=plant_id)
@@ -171,6 +182,7 @@ def add_plant(request):
     houseplants = HousePlant.objects.all()
     return render(request, "main/add_plant.html", {"houseplants": houseplants})
 
+@login_required
 def plant_dashboard(request, plant_id):
     """ Display a dashboard for a specific plant """
     plant = get_object_or_404(Plant, id=plant_id)
@@ -180,6 +192,7 @@ def plant_dashboard(request, plant_id):
 
     return render(request, "main/plant_dashboard.html", {"plant": plant, "sensor_data": sensor_data})
 
+@login_required
 @csrf_exempt
 def delete_record(request, record_id):
     """ Delete a specific sensor data record """
@@ -190,12 +203,3 @@ def delete_record(request, record_id):
     except SensorData.DoesNotExist:
         return JsonResponse({'error': 'Record not found'}, status=404)
 
-"""def main_view(request):
-    records = Record.objects.all()
-    items = []
-    for record in records:
-        timestamp = record.timestamp.strftime('%Y-%m-%d %H:%M:%S')
-        record_data = record.data  # Ensure we're modifying a copy of the data, not the original
-        record_data['timestamp'] = timestamp  # Ensure timestamp is always present
-        items.append(record_data)
-    return render(request, 'main/main.html', {'items': items, 'records': records})"""
