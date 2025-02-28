@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404
 from django.utils.timezone import now, timedelta
-from .models import Garden, Plant, SensorData  
+from .models import Garden, HousePlant, Plant, SensorData  
 import json
 from django.contrib.auth.models import User 
 from django.shortcuts import redirect, render
@@ -96,42 +96,80 @@ def plant_data(request, plant_id):
     # Format the response
     items = []
     for record in records:
-        items.append({
+        record_data = {
             "timestamp": record.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
             "temperature": record.temperature,
             "humidity": record.humidity,
             "soil_moisture": record.soil_moisture,
             "light": record.light,
-        })
+        }
+        
+        # Add plant thresholds to each data point if houseplant_type exists
+        if plant.houseplant_type:
+            record_data["thresholds"] = {
+                "temperature": {
+                    "min": plant.houseplant_type.min_temperature,
+                    "max": plant.houseplant_type.max_temperature,
+                    "preferred": plant.houseplant_type.preferred_temperature
+                },
+                "humidity": {
+                    "min": plant.houseplant_type.min_humidity,
+                    "max": plant.houseplant_type.max_humidity,
+                    "preferred": plant.houseplant_type.preferred_humidity
+                },
+                "soil_moisture": {
+                    "min": plant.houseplant_type.min_soil_moisture,
+                    "max": plant.houseplant_type.max_soil_moisture,
+                    "preferred": plant.houseplant_type.preferred_soil_moisture
+                },
+                "light": {
+                    "min": plant.houseplant_type.min_light,
+                    "max": plant.houseplant_type.max_light,
+                    "preferred": plant.houseplant_type.preferred_light
+                }
+            }
+        
+        items.append(record_data)
 
+    # Add plant metadata
+    plant_info = {"id": plant.id, "name": plant.name, "hardware_id": plant.hardware_id}
+    
+    if plant.houseplant_type:
+        plant_info["type"] = plant.houseplant_type.name
 
-    return JsonResponse({"items": items})
+    return JsonResponse({ "items": items, "plant": plant_info
+    })
 
 
 def add_plant(request):
     """ Handles form submission for creating a new plant. """
     if request.method == "POST":
         plant_name = request.POST.get("plant_name")  # Get plant name from form
-        plant_type = request.POST.get("plant_type")  # Get plant type
+        plant_type = request.POST.get("house_plant_type")  # Get plant type
         hardware_id = request.POST.get("hardware_id")  # Get hardware ID
 
         user = User.objects.first()  # Get any existing user
         if not user:
             user = User.objects.create_user(username="defaultuser", password="password123")
-        # Ensure user has a garden
-        garden = Garden.objects.filter(user=user, name="Default Garden").first()
-        garden = Garden.objects.get_or_create(user=user, defaults={"name": "Default Garden"})
+        
+        # Ensure user has a garden - fix the get_or_create usage
+        garden, created = Garden.objects.get_or_create(
+            user=user, 
+            name="Default Garden"
+        )
+        
         # Create and save the new plant
         Plant.objects.create(
-            garden=garden,
+            garden=garden,  # Now this is a Garden instance, not a tuple
             name=plant_name,
-            species=plant_type,
+            houseplant_type_id=request.POST.get("houseplant_type"),
             hardware_id=hardware_id
         )
 
         return redirect("gardens")
-
-    return render(request, "main/add_plant.html")
+    
+    houseplants = HousePlant.objects.all()
+    return render(request, "main/add_plant.html", {"houseplants": houseplants})
 
 def plant_dashboard(request, plant_id):
     """ Display a dashboard for a specific plant """

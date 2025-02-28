@@ -10,16 +10,40 @@ class Garden(models.Model):
         return f"{self.name} (Owned by {self.user.username})"
 
 
+
+class HousePlant(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    # Light Levels
+    preferred_light = models.FloatField()
+    min_light = models.FloatField()
+    max_light = models.FloatField()
+
+    # Soil Moisture
+    preferred_soil_moisture = models.FloatField()
+    min_soil_moisture = models.FloatField()
+    max_soil_moisture = models.FloatField()
+
+    # Temperature
+    preferred_temperature = models.FloatField()
+    min_temperature = models.FloatField()
+    max_temperature = models.FloatField()
+
+    # Humidity
+    preferred_humidity = models.FloatField()
+    min_humidity = models.FloatField()
+    max_humidity = models.FloatField()
+
+    def __str__(self):
+        return self.name
+
+
 # Plant model (Each garden can have multiple plants)
 class Plant(models.Model):
     garden = models.ForeignKey(Garden, on_delete=models.CASCADE)  # Link to a garden
     name = models.CharField(max_length=100)  # Plant name
-    species = models.CharField(max_length=100, blank=True, null=True)
+    houseplant_type = models.ForeignKey(HousePlant, on_delete=models.SET_NULL, null=True, blank=True)
     hardware_id = models.CharField(max_length=100, blank=True, null=True) # Optional species (for DB plants)
-    optimal_temperature = models.FloatField(blank=True, null=True)
-    optimal_humidity = models.FloatField(blank=True, null=True)
-    optimal_soil_moisture = models.FloatField(blank=True, null=True)
-    optimal_light = models.FloatField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.name} in {self.garden.name}"
