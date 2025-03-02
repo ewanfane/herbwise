@@ -26,13 +26,12 @@
     </header>
 
     <main>
-        <!-- Container for plant cards -->
         {% for plant in plants %}
         <section id="plant-container">
 
                 <section class="plant-card" data-garden-name="{{ plant.name }}">
+                    <img class="plant-settings" src="{% static 'main/assets/icon/settings-icon.png' %}" alt="Settings">
                     <a href="{% url 'plant_dashboard' plant.id %}" class="plant-card-link">
-                        <img class="plant-settings" src="{% static 'main/assets/icon/settings-icon.png' %}" alt="Settings">
                         <img src="{% static 'main/assets/icon/plant7.png' %}" alt="Plant">
                         <figcaption>{{ plant.name }}</figcaption>
                     </a>
