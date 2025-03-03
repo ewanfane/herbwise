@@ -26,11 +26,15 @@
     <main>
         <section id="garden-container">
             {% for garden in gardens %}
+            <a href="{% url 'garden' garden.id %}">
             <section class="garden-card" data-garden-id="{{ garden.id }}" data-garden-name="{{ garden.name }}">
+                
                 <img class="garden-settings" src="{% static 'main/assets/icon/settings-icon.png' %}" alt="Settings">
                 <img src="{% static 'main/assets/icon/pot.webp' %}" alt="Garden Pot">
                 <figcaption>{{ garden.name }}</figcaption>
+                
             </section>
+        </a>
             {% endfor %}
             <section id="add-garden-card" class="garden-card">
                 <img src="{% static 'main/assets/icon/add-bookmark.png' %}" alt="Add Garden">
