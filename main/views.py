@@ -14,23 +14,45 @@ def home(request):
 
 @login_required
 def gardens(request):
-    return render(request, 'main/gardens.html')
-
+    user_gardens = Garden.objects.filter(user=request.user)  # Only show the logged-in user's gardens
+    return render(request, 'main/gardens.html', {"gardens": user_gardens})
+ 
 
 
 @login_required
-def garden_details(request):
-    plants = Plant.objects.all()
-    return render(request, 'main/garden-details.html', {
-        'garden_name': 'Garden 1',
-        'plants': plants
-    })
+def garden_details(request, garden_id):
+    garden = get_object_or_404(Garden, id=garden_id, user=request.user)  # Ensure the user owns the garden
+    plants = Plant.objects.filter(garden=garden) 
+    return render(request, 'main/garden-details.html', {'garden': garden, 'plants': plants})
 
 
 
 @login_required
 def add_plant(request):
-    return render(request, 'main/add_plant.html')
+    """ Handles form submission for creating a new plant. """
+    if request.method == "POST":
+        plant_name = request.POST.get("plant_name")  # Get plant name from form
+        plant_type = request.POST.get("house_plant_type")  # Get plant type
+        hardware_id = request.POST.get("hardware_id")  # Get hardware ID
+        
+   
+        garden, created = Garden.objects.get_or_create(
+            user=request.user, 
+            defaults={"name": f"{request.user.username}'s Garden"}
+        )
+        
+        # Create and save the new plant
+        Plant.objects.create(
+            garden=garden,
+            name=plant_name,
+            houseplant_type_id=request.POST.get("houseplant_type"),
+            hardware_id=hardware_id
+        )
+
+        return redirect("gardens")
+    
+    houseplants = HousePlant.objects.all()
+    return render(request, "main/add_plant.html", {"houseplants": houseplants})
 
 
 
@@ -152,36 +174,6 @@ def plant_data(request, plant_id):
     })
 
 
-def add_plant(request):
-    """ Handles form submission for creating a new plant. """
-    if request.method == "POST":
-        plant_name = request.POST.get("plant_name")  # Get plant name from form
-        plant_type = request.POST.get("house_plant_type")  # Get plant type
-        hardware_id = request.POST.get("hardware_id")  # Get hardware ID
-
-        user = User.objects.first()  # Get any existing user
-        if not user:
-            user = User.objects.create_user(username="defaultuser", password="password123")
-        
-        # Ensure user has a garden - fix the get_or_create usage
-        garden, created = Garden.objects.get_or_create(
-            user=user, 
-            name="Default Garden"
-        )
-        
-        # Create and save the new plant
-        Plant.objects.create(
-            garden=garden,  # Now this is a Garden instance, not a tuple
-            name=plant_name,
-            houseplant_type_id=request.POST.get("houseplant_type"),
-            hardware_id=hardware_id
-        )
-
-        return redirect("gardens")
-    
-    houseplants = HousePlant.objects.all()
-    return render(request, "main/add_plant.html", {"houseplants": houseplants})
-
 @login_required
 def plant_dashboard(request, plant_id):
     """ Display a dashboard for a specific plant """
@@ -203,3 +195,15 @@ def delete_record(request, record_id):
     except SensorData.DoesNotExist:
         return JsonResponse({'error': 'Record not found'}, status=404)
 
+@login_required
+@csrf_exempt  
+def create_garden(request):
+    if request.method == "POST":
+        garden_name = request.POST.get("garden_name")
+        if garden_name:
+            garden = Garden.objects.create(
+                user=request.user,
+                name=garden_name
+            )
+            return redirect("gardens")
+    return JsonResponse({"success": False}, status=400)

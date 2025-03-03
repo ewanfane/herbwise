@@ -1,9 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import User  # Use Django's built-in User model
+from django.contrib.auth.models import User  
 
 # Garden model (Each user can have multiple gardens)
 class Garden(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Link garden to a user
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)  # Link garden to a user
     name = models.CharField(max_length=100)  # Garden name
 
     def __str__(self):

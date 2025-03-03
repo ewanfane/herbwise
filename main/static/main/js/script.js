@@ -33,8 +33,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             menu.classList.toggle("show");
         } else if (gardenCard && !event.target.closest(".garden-settings")) {
-            const gardenName = gardenCard.querySelector("figcaption").textContent;
-            window.location.href = window.GARDEN_DETAILS_URL;
+            if (gardenCard.id !== "add-garden-card") {
+                const gardenId = gardenCard.getAttribute("data-garden-id");
+                if (gardenId) {
+                    // Navigate to the garden details page
+                    window.location.href = `/gardens/${gardenId}/`;
+                }
+            }
         } else {
             document.querySelectorAll(".garden-menu.show").forEach((menu) => menu.classList.remove("show"));
         }
@@ -44,29 +49,50 @@ document.addEventListener("DOMContentLoaded", function () {
         event.stopPropagation();
         const gardenName = prompt("Enter the name of your new garden:");
         if (gardenName) {
-            const newGarden = document.createElement("section");
-            newGarden.classList.add("garden-card");
 
-            newGarden.innerHTML = `
-                <img src="/static/main/assets/icon/pot.webp" alt="${gardenName}">
-                <figcaption>${gardenName}</figcaption>
-                <img src="/static/main/assets/icon/settings-icon.png" class="garden-settings" alt="Settings">
-            `;
-
-            document.getElementById("garden-container").insertBefore(newGarden, document.getElementById("add-garden-card"));
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/create_garden/'; 
+            
+            // Add CSRF token
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            // Add garden name
+            const nameInput = document.createElement('input');
+            nameInput.type = 'hidden';
+            nameInput.name = 'garden_name';
+            nameInput.value = gardenName;
+            
+            form.appendChild(csrfInput);
+            form.appendChild(nameInput);
+            document.body.appendChild(form);
+            form.submit();
         }
     });
 
     function renameGarden(card) {
+        const gardenId = card.dataset.gardenId;
         const newName = prompt("Enter the new name of your garden:");
-        if (newName) {
+        if (newName && gardenId) {
+
             card.querySelector("figcaption").textContent = newName;
+            
+
         }
         card.querySelector(".garden-menu").classList.remove("show");
     }
 
     function deleteGarden(card) {
-        card.remove();
+        const gardenId = card.dataset.gardenId;
+        if (gardenId && confirm("Are you sure you want to delete this garden?")) {
+
+            card.remove();
+            
+
+        }
     }
 
     document.addEventListener("click", function (event) {
