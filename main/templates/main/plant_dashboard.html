@@ -21,7 +21,7 @@
     <header>
         <h1>{{ plant.name }} - Sensor Dashboard</h1>
         <nav>
-            <a href="{% url 'garden_details' %}">Back to Garden</a>
+            <a href="{% url 'garden_details' plant.garden.id %}">Back to Garden</a>
             <a href="{% url 'gardens' %}">All Gardens</a>
         </nav>
     </header>

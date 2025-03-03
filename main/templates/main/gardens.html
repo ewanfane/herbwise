@@ -15,6 +15,7 @@
 </head>
 
 <body>
+    {% csrf_token %}
     <header>
         <h1>My Gardens</h1>
         <nav>
@@ -24,20 +25,20 @@
     </header>
     <main>
         <section id="garden-container">
-            <section class="garden-card" data-garden-name="My first garden 1">
+            {% for garden in gardens %}
+            <section class="garden-card" data-garden-id="{{ garden.id }}" data-garden-name="{{ garden.name }}">
                 <img class="garden-settings" src="{% static 'main/assets/icon/settings-icon.png' %}" alt="Settings">
                 <img src="{% static 'main/assets/icon/pot.webp' %}" alt="Garden Pot">
-                <figcaption>My first garden 1</figcaption>
+                <figcaption>{{ garden.name }}</figcaption>
             </section>
+            {% endfor %}
             <section id="add-garden-card" class="garden-card">
                 <img src="{% static 'main/assets/icon/add-bookmark.png' %}" alt="Add Garden">
                 <figcaption>Add Garden</figcaption>
             </section>
         </section>
     </main>
-    <script>
-        window.GARDEN_DETAILS_URL = "{% url 'garden_details' %}";
-    </script>
+
     <script src="{% static 'main/js/script.js' %}"></script>
 </body>
 
