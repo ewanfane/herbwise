@@ -26,7 +26,7 @@
     <main>
         <section id="garden-container">
             {% for garden in gardens %}
-            <a href="{% url 'garden' garden.id %}">
+            <a href="{% url 'garden_details' garden.id %}">
             <section class="garden-card" data-garden-id="{{ garden.id }}" data-garden-name="{{ garden.name }}">
                 
                 <img class="garden-settings" src="{% static 'main/assets/icon/settings-icon.png' %}" alt="Settings">
