@@ -7,3 +7,4 @@ from main.models import *
 admin.site.register(Garden)
 admin.site.register(Plant)
 admin.site.register(SensorData)
+admin.site.register(HousePlant)
