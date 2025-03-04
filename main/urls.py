@@ -13,6 +13,8 @@ urlpatterns = [
     path('plant_dashboard/<int:plant_id>/', views.plant_dashboard, name='plant_dashboard'),
     path("plant_data/<int:plant_id>/", views.plant_data, name="plant_data"),
     path('create_garden/', views.create_garden, name='create_garden'),
+    path('gardens/<int:garden_id>/rename/', views.rename_garden, name='rename_garden'),
+    path('gardens/<int:garden_id>/delete/', views.delete_garden, name='delete_garden'),
 
 
 ]
