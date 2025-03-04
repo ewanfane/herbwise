@@ -45,27 +45,26 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    document.getElementById("add-garden-card").addEventListener("click", function (event) {
+   document.getElementById("add-garden-card").addEventListener("click", function (event) {
         event.stopPropagation();
         const gardenName = prompt("Enter the name of your new garden:");
         if (gardenName) {
 
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '/create_garden/'; 
-            
-            // Add CSRF token
+            form.action = '/create_garden/';
+
             const csrfInput = document.createElement('input');
             csrfInput.type = 'hidden';
             csrfInput.name = 'csrfmiddlewaretoken';
             csrfInput.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            
-            // Add garden name
+
+
             const nameInput = document.createElement('input');
             nameInput.type = 'hidden';
             nameInput.name = 'garden_name';
             nameInput.value = gardenName;
-            
+
             form.appendChild(csrfInput);
             form.appendChild(nameInput);
             document.body.appendChild(form);
@@ -73,27 +72,60 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    function renameGarden(card) {
-        const gardenId = card.dataset.gardenId;
-        const newName = prompt("Enter the new name of your garden:");
-        if (newName && gardenId) {
+  async function renameGarden(card) {
+      const gardenId = card.dataset.gardenId;
+      const newName = prompt("Enter the new name of your garden:");
+      if (newName && gardenId) {
+          try {
+              const response = await fetch(`/gardens/${gardenId}/rename/`, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/x-www-form-urlencoded', // Important for form data
+                      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                  },
+                  body: `garden_name=${encodeURIComponent(newName)}`, // URL-encode the data
+              });
 
-            card.querySelector("figcaption").textContent = newName;
-            
+              if (response.ok) {
+                  // Update the garden name in the DOM *only* if the server confirms success
+                  card.querySelector("figcaption").textContent = newName;
+              } else {
+                  // Handle errors (e.g., display an error message)
+                  console.error('Failed to rename garden:', response.status, response.statusText);
+                  alert('Failed to rename garden. Please try again.');
+              }
+          } catch (error) {
+              console.error('Error renaming garden:', error);
+              alert('An error occurred. Please try again.');
+          }
+      }
+      card.querySelector(".garden-menu").classList.remove("show");
+  }
 
-        }
-        card.querySelector(".garden-menu").classList.remove("show");
-    }
+  async function deleteGarden(card) {
+      const gardenId = card.dataset.gardenId;
+      if (gardenId && confirm("Are you sure you want to delete this garden?")) {
+          try {
+              const response = await fetch(`/gardens/${gardenId}/delete/`, {
+                  method: 'POST', // Or 'DELETE' if your view uses that method
+                  headers: {
+                      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                  },
+              });
 
-    function deleteGarden(card) {
-        const gardenId = card.dataset.gardenId;
-        if (gardenId && confirm("Are you sure you want to delete this garden?")) {
-
-            card.remove();
-            
-
-        }
-    }
+              if (response.ok) {
+                  // Remove the card from the DOM *only* if the server confirms deletion
+                  card.remove();
+              } else {
+                  console.error('Failed to delete garden:', response.status, response.statusText);
+                  alert('Failed to delete garden. Please try again.');
+              }
+          } catch (error) {
+              console.error('Error deleting garden:', error);
+              alert('An error occurred. Please try again.');
+          }
+      }
+  }
 
     document.addEventListener("click", function (event) {
         if (!event.target.closest(".garden-card") && !event.target.closest(".garden-menu")) {

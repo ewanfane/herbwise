@@ -5,6 +5,7 @@ from django.utils.timezone import now, timedelta
 from .models import Garden, HousePlant, Plant, SensorData  
 import json
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User 
 from django.shortcuts import redirect, render
 
@@ -195,15 +196,36 @@ def delete_record(request, record_id):
     except SensorData.DoesNotExist:
         return JsonResponse({'error': 'Record not found'}, status=404)
 
+
+
+@require_POST  # Important: Only allow POST requests
 @login_required
-@csrf_exempt  
 def create_garden(request):
-    if request.method == "POST":
-        garden_name = request.POST.get("garden_name")
-        if garden_name:
-            garden = Garden.objects.create(
-                user=request.user,
-                name=garden_name
-            )
-            return redirect("gardens")
-    return JsonResponse({"success": False}, status=400)
+    garden_name = request.POST.get('garden_name')
+    if garden_name:
+        Garden.objects.create(name=garden_name, user=request.user)
+        # Redirect back to the garden list (or wherever you want)
+        return redirect('gardens')  # Replace 'garden_list' with your URL name
+    else:
+        return JsonResponse({'error': 'Garden name is required'})
+
+
+@require_POST
+@login_required
+def rename_garden(request, garden_id):
+    garden = get_object_or_404(Garden, pk=garden_id, user=request.user) # Ensure user owns garden
+    new_name = request.POST.get('garden_name')
+    if new_name:
+        garden.name = new_name
+        garden.save()
+        return JsonResponse({'message': 'success'})
+    else:
+        return JsonResponse({'message': "New name is required"})
+
+
+@require_POST  # Or @require_http_methods(['DELETE']) if you use DELETE
+@login_required
+def delete_garden(request, garden_id):
+    garden = get_object_or_404(Garden, pk=garden_id, user=request.user) # Ensure user owns garden
+    garden.delete()
+    return JsonResponse({'message': 'success'})
