@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Garden</title>
+    <link rel="stylesheet" href="{% static 'main/css/add_garden.css' %}">
+    <style>
+        body {
+            background-image: url('{% static 'main/assets/images/sky_1.png' %}');
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Add a New Garden</h1>
+    </header>
+
+    <main>
+        <form id="add-garden-form" method="POST" action="{% url 'add_garden' %}">
+            {% csrf_token %}
+            
+            <label for="garden-name">Garden Name:</label>
+            <input type="text" id="garden-name" name="garden_name" required>
+            <button type="submit">add Garden</button>
+        </form>
+    </main>
+
+    <script src="{% static 'main/js/add_garden.js' %}"></script>
+</body>
+</html>
