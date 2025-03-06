@@ -24,22 +24,25 @@
         </nav>
     </header>
     <main>
-        <section id="garden-container">
             {% for garden in gardens %}
-            <a href="{% url 'garden_details' garden.id %}">
+            <section id="garden-container">
+
             <section class="garden-card" data-garden-id="{{ garden.id }}" data-garden-name="{{ garden.name }}">
-                
                 <img class="garden-settings" src="{% static 'main/assets/icon/settings-icon.png' %}" alt="Settings">
+                <a href="{% url 'garden_details' garden.id %}" class="garden-card-link">
                 <img src="{% static 'main/assets/icon/pot.webp' %}" alt="Garden Pot">
                 <figcaption>{{ garden.name }}</figcaption>
                 
-            </section>
+            
             </a>
+        </section>
             {% endfor %}
-            <section id="add-garden-card" class="garden-card">
-                <img src="{% static 'main/assets/icon/add-bookmark.png' %}" alt="Add Garden">
-                <figcaption>Add Garden</figcaption>
-            </section>
+            <a href="{% url 'add_garden' %}">
+                <section id="add-garden-card" class="garden-card">
+                    <img src="{% static 'main/assets/icon/add-bookmark.png' %}" alt="Add Garden">
+                    <figcaption>Add Garden</figcaption>
+                </section>
+                </a>
         </section>
     </main>
 
