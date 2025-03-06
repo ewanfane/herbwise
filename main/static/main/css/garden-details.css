@@ -50,7 +50,7 @@ main {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    padding-top: 15vh; /* Adjust to make room for header */
+    padding-top: 15vh; 
     min-height: 85vh;
 }
 
@@ -217,6 +217,23 @@ main {
 .out-of-range {
     color: red; /* Highlight out-of-range values */
     font-weight: bold;
+}
+
+/* Streak box design */
+.streak-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.771);
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+.streak-logo {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
 }
 
 /* Loading States */
