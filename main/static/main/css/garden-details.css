@@ -196,6 +196,29 @@ main {
     border-radius: 4px;
 }
 
+.warning-mark {
+    position: absolute;
+    top: -10px;  /* Overlap slightly */
+    left: -10px; /* Overlap slightly */
+    width: 40px;  /* Larger size */
+    height: 40px; /* Larger size */
+    background-color: red;
+    color: white;
+    font-size: 30px; /* Larger font */
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%; /* Make it circular */
+    z-index: 11;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3); /* Add a subtle shadow */
+}
+
+.out-of-range {
+    color: red; /* Highlight out-of-range values */
+    font-weight: bold;
+}
+
 /* Loading States */
 .temperature, .humidity, .soilMoisture, .light {
     position: relative;

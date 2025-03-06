@@ -22,14 +22,71 @@ def gardens(request):
 
 @login_required
 def garden_details(request, garden_id):
-    garden = get_object_or_404(Garden, id=garden_id, user=request.user)  # Ensure the user owns the garden
-    plants = Plant.objects.filter(garden=garden) 
+    garden = get_object_or_404(Garden, id=garden_id, user=request.user)
+    plants = Plant.objects.filter(garden=garden)
+
+    for plant in plants:
+        if plant.houseplant_type:
+            # --- Store thresholds as a DICTIONARY, directly usable by JS ---
+            plant.thresholds_js = {
+                "temperature": {
+                    "min": plant.houseplant_type.min_temperature,
+                    "max": plant.houseplant_type.max_temperature,
+                },
+                "humidity": {
+                    "min": plant.houseplant_type.min_humidity,
+                    "max": plant.houseplant_type.max_humidity,
+                },
+                "soil_moisture": {
+                    "min": plant.houseplant_type.min_soil_moisture,
+                    "max": plant.houseplant_type.max_soil_moisture,
+                },
+                "light": {
+                    "min": plant.houseplant_type.min_light,
+                    "max": plant.houseplant_type.max_light,
+                }
+            }
+            # --- END CHANGE ---
+
+        latest_data = SensorData.objects.filter(plant=plant).order_by('-timestamp').first()
+        plant.needs_attention = False
+        # Create attributes to hold highlighted status.  Initialize to False.
+        plant.temp_out_of_bounds = False
+        plant.humidity_out_of_bounds = False
+        plant.moisture_out_of_bounds = False
+        plant.light_out_of_bounds = False
+
+
+        if latest_data:
+            if (latest_data.temperature < plant.houseplant_type.min_temperature or
+                latest_data.temperature > plant.houseplant_type.max_temperature):
+                plant.temp_out_of_bounds = True
+                plant.needs_attention = True
+
+            if (latest_data.humidity < plant.houseplant_type.min_humidity or
+                latest_data.humidity > plant.houseplant_type.max_humidity):
+                plant.humidity_out_of_bounds = True
+                plant.needs_attention = True
+
+            if (latest_data.soil_moisture < plant.houseplant_type.min_soil_moisture or
+                latest_data.soil_moisture > plant.houseplant_type.max_soil_moisture):
+                plant.moisture_out_of_bounds = True
+                plant.needs_attention = True
+
+            if (latest_data.light < plant.houseplant_type.min_light or
+                latest_data.light > plant.houseplant_type.max_light):
+                plant.light_out_of_bounds = True
+                plant.needs_attention = True
+
+
     return render(request, 'main/garden-details.html', {'garden': garden, 'plants': plants})
 
 
 
+
+
 @login_required
-def add_plant(request):
+def add_plant(request, garden_id):
     """ Handles form submission for creating a new plant. """
     if request.method == "POST":
         plant_name = request.POST.get("plant_name")  # Get plant name from form
@@ -37,10 +94,7 @@ def add_plant(request):
         hardware_id = request.POST.get("hardware_id")  # Get hardware ID
         
    
-        garden, created = Garden.objects.get_or_create(
-            user=request.user, 
-            defaults={"name": f"{request.user.username}'s Garden"}
-        )
+        garden = Garden.objects.get(id=garden_id)
         
         # Create and save the new plant
         Plant.objects.create(
