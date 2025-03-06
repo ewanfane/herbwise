@@ -15,6 +15,22 @@
         .out-of-bounds {
             color: red;
         }
+        .streak-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            align-items: center;
+            background: rgba(80, 80, 80, 0.8);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .streak-logo {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+        
     </style>
 </head>
 
@@ -28,6 +44,11 @@
     </header>
 
     <main>
+        <div class="streak-container">
+            {% comment %} <img src="{% static 'main/assets/icon/flame.png' %}" alt="Streak" class="streak-logo"> {% endcomment %}
+            <span class="streak-logo">🔥</span>
+            <span>Streak: {{ streak }} days</span>
+        </div>
         {% for plant in plants %}
         <section id="plant-container">
 

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User  
+from django.utils import timezone
 
 # Garden model (Each user can have multiple gardens)
 class Garden(models.Model):
@@ -60,3 +61,35 @@ class SensorData(models.Model):
 
     def __str__(self):
         return f"Data for {self.plant.name} at {self.timestamp}"
+
+# Garden Visit model for streak tracking
+class GardenVisit(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    garden = models.ForeignKey(Garden, on_delete=models.CASCADE)
+    last_visit = models.DateTimeField(default=timezone.now)
+    last_streak_increment = models.DateTimeField(default=timezone.now) 
+    streak = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        unique_together = ('user', 'garden')
+
+    def update_streak(self):
+        now = timezone.now()
+        time_diff = now - self.last_visit
+        hours_diff = time_diff.total_seconds() / 3600
+
+        #Reset streak if more than 25 hours have passed since the last visit
+        if hours_diff > 25:
+            self.streak = 1
+            self.last_streak_increment = now
+
+        #Check if 24 hours have passed since the last incremention
+        time_since_last_increment = now - self.last_streak_increment
+        hours_since_last_increment = time_since_last_increment.total_seconds() / 3600
+
+        if hours_since_last_increment >= 24:
+            self.streak += 1
+            self.last_streak_increment = now
+
+        self.last_visit = now
+        self.save()
