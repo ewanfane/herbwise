@@ -23,6 +23,7 @@
             <a href="{% url 'home' %}">Back</a>
         </nav>
     </header>
+
     <main>
             {% for garden in gardens %}
             <section id="garden-container">
@@ -32,8 +33,6 @@
                 <a href="{% url 'garden_details' garden.id %}" class="garden-card-link">
                 <img src="{% static 'main/assets/icon/pot.webp' %}" alt="Garden Pot">
                 <figcaption>{{ garden.name }}</figcaption>
-                
-            
             </a>
         </section>
             {% endfor %}
