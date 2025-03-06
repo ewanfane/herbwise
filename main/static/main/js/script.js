@@ -44,32 +44,24 @@ document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll(".garden-menu.show").forEach((menu) => menu.classList.remove("show"));
         }
     });
-
+// Add a new garden card when the "Add Garden" card is clicked
    document.getElementById("add-garden-card").addEventListener("click", function (event) {
         event.stopPropagation();
-        const gardenName = prompt("Enter the name of your new garden:");
-        if (gardenName) {
+        window.location.href = "{% url 'add_garden' %}";
 
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/create_garden/';
+        const gardenName = 0;
+    if (gardenName) {
+        const newGarden = document.createElement("section");
+        newGarden.classList.add("garden-card");
 
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = 'csrfmiddlewaretoken';
-            csrfInput.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        newGarden.innerHTML = `
+            <img src="/assets/icon/pot.webp" alt="${gardenName}">
+            <figcaption>${gardenName}</figcaption>
+            <img src="/assets/icon/settings-icon.png" class="garden-settings" alt="Settings">
+        `;
 
-
-            const nameInput = document.createElement('input');
-            nameInput.type = 'hidden';
-            nameInput.name = 'garden_name';
-            nameInput.value = gardenName;
-
-            form.appendChild(csrfInput);
-            form.appendChild(nameInput);
-            document.body.appendChild(form);
-            form.submit();
-        }
+        document.getElementById("garden-container").insertBefore(newGarden, document.getElementById("add-garden-card"));
+    }
     });
 
   async function renameGarden(card) {

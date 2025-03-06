@@ -79,8 +79,8 @@ document.getElementById("plant-container").addEventListener("click", function (e
 // Add a new plant card when the "Add Plant" card is clicked
 document.getElementById("add-plant-card").addEventListener("click", function (event) {
     event.stopPropagation(); // Prevent other click events from triggering
-
-    const plantName = prompt("Enter the name of your new plant:");
+    window.location.href = "{% url 'add_plant' %}";
+    const plantName = 0;
     if (plantName) {
         const newPlant = document.createElement("section");
         newPlant.classList.add("plant-card");

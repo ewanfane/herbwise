@@ -74,6 +74,12 @@ nav a:hover {
     max-height: 30px; /* Limit the maximum size of the icon */
     cursor: pointer; /* Make it clickable */
     z-index: 10; /* Ensure it's above other content */
+    opacity: 0.7;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.garden-settings:hover {
+    opacity: 1;
+    transform: rotate(30deg);
 }
 
 /* Style the image */
@@ -83,18 +89,23 @@ nav a:hover {
 }
 
 /* Style the caption */
-figcaption {
+.garden-card figcaption {
     margin-top: 10px;
     font-size: 1.2rem;
+    color: white;
 }
 
 /* Style for the 'Add Garden' card */
 #add-garden-card {
     opacity: 0.7; /* Slightly transparent to indicate it's an action button */
+    cursor: pointer;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    transition: opacity 0.3s ease, border-color 0.3s ease;
 }
 
 #add-garden-card:hover {
     opacity: 1; /* Make it fully visible when hovered */
+    border-color: rgba(255, 255, 255, 0.8);
 }
 
 
@@ -110,6 +121,7 @@ figcaption {
     display: none; /* Initially hidden */
     list-style: none;
     z-index: 10; /* Ensure it is on top of the card */
+    min-width: 150px;
 }
 
 /* Make the menu visible when it has the 'show' class */
@@ -134,19 +146,16 @@ figcaption {
 
 /* Fade-in animation for the menu */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from {opacity: 0;}
+    to {opacity: 1;}
 }
 /* Fade-out animation for the menu */
 @keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
+    from {opacity: 1;}
+    to {opacity: 0;}
+}
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
 }

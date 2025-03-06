@@ -109,6 +109,23 @@ def add_plant(request, garden_id):
     houseplants = HousePlant.objects.all()
     return render(request, "main/add_plant.html", {"houseplants": houseplants})
 
+@login_required
+def add_garden(request):
+    """ Handles form submission for creating a new plant. """
+    if request.method == "POST":
+        garden_name = request.POST.get("garden_name")
+        if not garden_name:
+            garden_name = f"{request.user.username}'s Garden"  # Fallback if no name provided
+
+        # Check if a garden with this name already exists for the user
+        if Garden.objects.filter(user=request.user, name=garden_name).exists():
+            return render(request, "main/add_garden.html", {"error": "A garden with this name already exists."})
+
+        # Create a new garden
+        garden = Garden.objects.create(user=request.user, name=garden_name)
+        return redirect("gardens")
+    
+    return render(request, "main/add_garden.html")
 
 
 @csrf_exempt 
