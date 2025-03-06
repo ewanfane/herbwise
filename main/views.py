@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404
 from django.utils.timezone import now, timedelta
-from .models import Garden, HousePlant, Plant, SensorData  
+from .models import Garden, HousePlant, Plant, SensorData, GardenVisit  
 import json
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -78,8 +78,17 @@ def garden_details(request, garden_id):
                 plant.light_out_of_bounds = True
                 plant.needs_attention = True
 
+    #Streak update
+    visit, created = GardenVisit.objects.get_or_create(user=request.user, garden=garden)
+    visit.update_streak()
 
-    return render(request, 'main/garden-details.html', {'garden': garden, 'plants': plants})
+    context = {
+        'garden': garden,
+        'plants': plants,
+        'streak': visit.streak,  
+    }
+    return render(request, 'main/garden-details.html', context)
+
 
 
 
