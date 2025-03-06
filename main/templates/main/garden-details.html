@@ -6,22 +6,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Garden Details</title>
-    <link rel="stylesheet" href="{% static 'main/css/garden-details.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/garden-details.css' %}?{% now 'U' %}">
     <style>
         body {
             background-image: url('{% static 'main/assets/icon/background4.png' %}');
+        }
+        /* Add this style for highlighting */
+        .out-of-bounds {
+            color: red;
         }
     </style>
 </head>
 
 <body>
-    <!-- Header displaying the garden name -->
     <header>
-        <h1>{{garden_name}}</h1> <!-- This will be dynamically updated -->
+        <h1>{{garden.name}}</h1>
         <nav>
             <a href="{% url 'home' %}">Home</a>
             <a href="{% url 'gardens' %}">Back</a>
-            <!-- <button onclick="location.href='/index.html'">Home</a> -->
         </nav>
     </header>
 
@@ -29,42 +31,36 @@
         {% for plant in plants %}
         <section id="plant-container">
 
-                <section class="plant-card" data-garden-name="{{ plant.name }}">
-                    <img class="plant-settings" src="{% static 'main/assets/icon/settings-icon.png' %}" alt="Settings">
-                    <a href="{% url 'plant_dashboard' plant.id %}" class="plant-card-link">
-                        <img src="{% static 'main/assets/icon/plant7.png' %}" alt="Plant">
-                        <figcaption>{{ plant.name }}</figcaption>
-                    </a>
+            <section class="plant-card" data-garden-name="{{ plant.name }}">
+                <img class="plant-settings" src="{% static 'main/assets/icon/settings-icon.png' %}" alt="Settings">
+                {% if plant.needs_attention %}
+                <div class="warning-mark">!</div>
+                {% endif %}
+                <a href="{% url 'plant_dashboard' plant.id %}" class="plant-card-link">
+                    <img src="{% static 'main/assets/icon/plant7.png' %}" alt="Plant">
+                    <figcaption>{{ plant.name }}</figcaption>
+                </a>
 
 
-                    <div class="sensor-data-container" data-plant-id="{{ plant.id }}">
-                        <div>🌡️ <strong>Temperature:</strong> <span class="temperature">Loading...</span></div>
-                        <div>💧 <strong>Humidity:</strong> <span class="humidity">Loading...</span></div>
-                        <div>🌱 <strong>Soil Moisture:</strong> <span class="soilMoisture">Loading...</span></div>
-                        <div>☀️ <strong>Light Level:</strong> <span class="light">Loading...</span></div>
-                    </div>
-                        
-                </section>
-  
+                <div class="sensor-data-container" data-plant-id="{{ plant.id }}">
+                    <div>🌡️ <strong>Temperature:</strong> <span class="temperature {% if plant.temp_out_of_bounds %}out-of-bounds{% endif %}">Loading...</span></div>
+                    <div>💧 <strong>Humidity:</strong> <span class="humidity {% if plant.humidity_out_of_bounds %}out-of-bounds{% endif %}">Loading...</span></div>
+                    <div>🌱 <strong>Soil Moisture:</strong> <span class="soilMoisture {% if plant.moisture_out_of_bounds %}out-of-bounds{% endif %}">Loading...</span></div>
+                    <div>☀️ <strong>Light Level:</strong> <span class="light {% if plant.light_out_of_bounds %}out-of-bounds{% endif %}">Loading...</span></div>
+                </div>
+
+            </section>
+
         </section>
         {% endfor %}
-
-
-
-            
-            <!-- Plant cards will be added dynamically here -->
-
-            <!-- Add Plant Button -->
-             <a href="{% url 'add_plant' %}">
+            <a href="{% url 'add_plant' garden.id %}">
             <section id="add-plant-card" class="plant-card">
                 <img src="{% static 'main/assets/icon/add-bookmark.png' %}" alt="Add Plant">
                 <figcaption>Add Plant</figcaption>
             </section>
-            </a>
-        </section>
+        </a>
+    </section>
     </main>
-
     <script src="{% static 'main/js/garden-details.js' %} "></script>
 </body>
-
 </html>
