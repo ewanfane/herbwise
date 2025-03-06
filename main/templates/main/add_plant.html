@@ -18,7 +18,7 @@
     </header>
 
     <main>
-        <form id="add-plant-form" method="POST" action="{% url 'add_plant' %}">
+        <form id="add-plant-form" method="POST">
             {% csrf_token %}
             
             <label for="plant-name">Plant Name:</label>
