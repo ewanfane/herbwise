@@ -78,21 +78,9 @@ document.getElementById("plant-container").addEventListener("click", function (e
 
 // Add a new plant card when the "Add Plant" card is clicked
 document.getElementById("add-plant-card").addEventListener("click", function (event) {
+    
     event.stopPropagation(); // Prevent other click events from triggering
     window.location.href = "{% url 'add_plant' %}";
-    const plantName = 0;
-    if (plantName) {
-        const newPlant = document.createElement("section");
-        newPlant.classList.add("plant-card");
-
-        newPlant.innerHTML = `
-            <img src="/assets/icon/plant7.png" alt="${plantName}">
-            <figcaption>${plantName}</figcaption>
-            <img src="/assets/icon/settings-icon.png" class="plant-settings" alt="Settings">
-        `;
-
-        document.getElementById("plant-container").insertBefore(newPlant, document.getElementById("add-plant-card"));
-    }
 });
 
 // Rename Plant function

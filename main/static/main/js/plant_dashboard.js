@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         light: {
             label: "Light Level (lux)",
-            color: "rgb(255, 205, 86)"
+            color: "rgb(210, 153, 20)"
         }
     };
     
