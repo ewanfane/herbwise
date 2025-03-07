@@ -309,3 +309,34 @@ def delete_garden(request, garden_id):
     garden = get_object_or_404(Garden, pk=garden_id, user=request.user) # Ensure user owns garden
     garden.delete()
     return JsonResponse({'message': 'success'})
+
+
+@require_POST  # Ensures this view only accepts POST requests
+@login_required
+def rename_plant(request, plant_id):
+    plant = get_object_or_404(Plant, id=plant_id, garden__user=request.user)  # Ensure user owns the plant
+    try:
+        data = json.loads(request.body)
+        new_name = data.get('new_name')
+
+        if not new_name:
+            return JsonResponse({'success': False, 'error': 'New name is required.'}, status=400)
+
+        plant.name = new_name
+        plant.save()
+        return JsonResponse({'success': True})
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'error': 'Invalid JSON data.'}, status=400)
+    except Exception as e:  # Catch other potential errors
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@require_POST
+@login_required
+def delete_plant(request, plant_id):
+    plant = get_object_or_404(Plant, id=plant_id, garden__user=request.user)  # Check ownership
+    try:
+        plant.delete()
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
