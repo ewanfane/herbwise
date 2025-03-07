@@ -1,0 +1,183 @@
+/* garden.css */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montagu Slab', serif;
+    color: white;
+    text-align: center;
+    background-image: url("../assets/icon/background4.png");
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+}
+
+/* Position the header at the top */
+header {
+    position: absolute;
+    top: 5%;
+    width: 100%;
+    text-align: center;
+}
+header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    font-family: 'Montagu Slab', serif;
+
+}
+
+/* Navigation */
+nav {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+nav a{
+    color:whitesmoke;
+    text-decoration: none;
+    margin: 0 0.5rem;
+    font-size: 1rem;
+    transition: color 0.3s ease;    
+}
+nav a:hover {
+    color: darkgreen;
+}
+
+/* Main Content */
+main {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding-top: 15vh; 
+    min-height: 85vh;
+}
+
+/* Container for garden cards */
+#garden-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    max-width: 1200px;
+}
+
+/* Style for the garden card */
+.garden-card {
+    position: relative; 
+    background-color: rgba(0, 0, 0, 0.7); 
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 250px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.garden-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+.garden-card-link {
+    color: white;
+    text-decoration: none;
+    display: block;
+}
+
+/* Style for the settings icon */
+.garden-settings {
+    position: absolute; /* Position it relative to the garden card */
+    top: 10px;   /* Adjusts the distance from the top of the card */
+    right: 10px; /* Adjusts the distance from the right side of the card */
+    width: auto;  /* Keep the original width */
+    height: auto; /* Keep the original height */
+    max-width: 30px; /* Limit the maximum size of the icon */
+    max-height: 30px; /* Limit the maximum size of the icon */
+    cursor: pointer; /* Make it clickable */
+    z-index: 10; /* Ensure it's above other content */
+    opacity: 0.7;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.garden-settings:hover {
+    opacity: 1;
+    transform: rotate(30deg);
+}
+
+/* Style the image */
+.garden-card img {
+    width: 100%;
+    object-fit: contain;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* Style the caption */
+.garden-card figcaption {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    color: white;
+}
+
+/* Style for the 'Add Garden' card */
+#add-garden-card {
+    opacity: 0.7; /* Slightly transparent to indicate it's an action button */
+    cursor: pointer;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    transition: opacity 0.3s ease, border-color 0.3s ease;
+}
+
+#add-garden-card:hover {
+    opacity: 1; /* Make it fully visible when hovered */
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+
+/* Center the menu inside the garden card */
+.garden-menu {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 8px;
+    padding: 10px;
+    display: none; /* Initially hidden */
+    list-style: none;
+    z-index: 10; /* Ensure it is on top of the card */
+    min-width: 150px;
+}
+
+/* Make the menu visible when it has the 'show' class */
+.garden-menu.show {
+    display: block;
+    animation: fadeIn 0.3s ease-out; /* Animation for smooth visibility */
+}
+
+/* Add a hover effect for the options */
+.garden-menu li {
+    color: white;
+    font-size: 1.2rem;
+    padding: 8px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.garden-menu li:hover {
+    background-color: #555;
+    border-radius: 4px;
+}
+
+/* Fade-in animation for the menu */
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+/* Fade-out animation for the menu */
+@keyframes fadeOut {
+    from {opacity: 1;}
+    to {opacity: 0;}
+}
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
